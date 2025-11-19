@@ -23,8 +23,7 @@
 
         <!-- ✅ Dropdown Menu -->
         <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
+          <a class="nav-link dropdown-toggle"
             href="#"
             id="navbarDropdown"
             role="button"
@@ -32,7 +31,9 @@
             aria-expanded="false">
             Schedules
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+          <ul class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="navbarDropdown">
             <li>
               <a class="dropdown-item"
                 [routerLink]="['/search-result']"
@@ -40,14 +41,11 @@
                 View Schedules
               </a>
             </li>
-      <!-- <li>
-              <a class="dropdown-item" routerLink="/schedules/create" routerLinkActive="active">
-                Create Schedule
-              </a>
-            </li> -->
+
             <li><hr class="dropdown-divider"></li>
+
             <li>
-              <a class="dropdown-item" routerLink="/bus-scheduling" routerLinkActive="active">
+              <a class="dropdown-item" routerLink="/bus-scheduling">
                 Manage Schedules
               </a>
             </li>
