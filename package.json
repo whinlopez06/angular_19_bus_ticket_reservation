@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "e2e": "ng e2e",
-    "deploy": "ng build --configuration production --base-href /https://github.com/whinlopez06/angular19-bus-booking/ && npx angular-cli-ghpages --dir=dist/bus-ticket-booking-app"
+    "deploy": "ng build --configuration production --base-href /https://github.com/whinlopez06/angular19-bus-booking/ && cp dist/my-app/index.html dist/bus-ticket-booking-app/404.html && npx angular-cli-ghpages --dir=dist/bus-ticket-booking-app"
   },
   "private": true,
   "dependencies": {
