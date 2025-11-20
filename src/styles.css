@@ -113,9 +113,8 @@
 
 }
 
-/* nav bar */
-.navbar.navbar-expand-lg.navbar-dark {
-	/* Font & Text */
+/* .navbar.navbar-expand-lg.navbar-dark {
+
 	font-family: Inter, sans-serif;
 	font-size: 16px;
 	font-style: normal;
@@ -131,7 +130,7 @@
 	white-space: normal;
 	word-spacing: 0px;
 
-	/* Color & Background */
+
 	background-attachment: scroll;
 	background-color: rgba(31, 41, 55, 0.95);
 	background-image: none;
@@ -139,9 +138,9 @@
 	background-repeat: repeat;
 	color: rgb(33, 37, 41);
 
-	/* Box */
+
 	height: 56px;
-	/* width: 1520.8px; */
+
 	border: 0px none rgb(33, 37, 41);
 	border-top: 0px none rgb(33, 37, 41);
 	border-right: 0px none rgb(33, 37, 41);
@@ -154,7 +153,7 @@
 	max-width: none;
 	min-width: 0px;
 
-	/* Positioning */
+
 	position: relative;
 	top: 0px;
 	bottom: 0px;
@@ -165,24 +164,24 @@
 	clear: none;
 	z-index: auto;
 
-	/* List */
+
 	list-style-image: none;
 	list-style-type: disc;
 	list-style-position: outside;
 
-	/* Table */
+
 	border-collapse: separate;
 	border-spacing: 0px;
 	caption-side: top;
 	empty-cells: show;
 	table-layout: auto;
 
-	/* Miscellaneous */
+
 	overflow: visible;
 	cursor: auto;
 	visibility: visible;
 
-	/* Effects */
+
 	transform: none;
 	transition: all;
 	outline-offset: 0px;
@@ -198,9 +197,9 @@
 	border-bottom-right-radius: 0px;
 }
 
-/* span?? */
+
 span.navbar-toggler-icon {
-	/* Font & Text */
+
 	font-family: 'Inter', sans-serif;
 	font-size: 20px;
 	font-style: normal;
@@ -216,7 +215,7 @@ span.navbar-toggler-icon {
 	white-space: normal;
 	word-spacing: 0;
 
-	/* Color & Background */
+
 	background-color: transparent;
 	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 	background-position: center;
@@ -224,7 +223,7 @@ span.navbar-toggler-icon {
 	background-size: 100%;
 	color: rgba(255, 255, 255, 0.55);
 
-	/* Box */
+
 	width: 30px;
 	height: 30px;
 	border: none;
@@ -232,14 +231,74 @@ span.navbar-toggler-icon {
 	padding: 0;
 	box-sizing: border-box;
 
-	/* Positioning */
+
 	display: inline-block;
 	cursor: pointer;
 	vertical-align: middle;
 
-	/* Effects */
+
 	transition: all 0.3s ease;
 	outline: none;
 	box-shadow: none;
 	border-radius: 0;
+} */
+
+/* Custom navbar styles */
+.navbar.navbar-expand-lg.navbar-dark {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+
+  background-color: rgba(31, 41, 55, 0.95);
+  color: #ffffff;
+
+  /* Keep Bootstrap layout intact */
+  height: auto; /* remove fixed height */
+  padding: 0.5rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Navbar brand */
+.navbar.navbar-expand-lg.navbar-dark .navbar-brand {
+  color: #ffffff;
+  font-weight: 400;
+}
+
+/* Navbar links */
+.navbar.navbar-expand-lg.navbar-dark .nav-link {
+  color: #ffffff;
+}
+
+.navbar.navbar-expand-lg.navbar-dark .nav-link:hover,
+.navbar.navbar-expand-lg.navbar-dark .nav-link.active {
+  color: #f05a58;
+}
+
+/* Dropdown menu */
+.navbar.navbar-expand-lg.navbar-dark .dropdown-menu {
+  background-color: rgba(31, 41, 55, 0.95);
+}
+
+.navbar.navbar-expand-lg.navbar-dark .dropdown-item {
+  color: #ffffff;
+}
+
+.navbar.navbar-expand-lg.navbar-dark .dropdown-item:hover {
+  background-color: #f05a58;
+  color: #ffffff;
+}
+
+/* Toggler button */
+.navbar.navbar-expand-lg.navbar-dark .navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.75rem;
+}
+
+/* Toggler icon */
+.navbar.navbar-expand-lg.navbar-dark .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.7%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  width: 30px;
+  height: 30px;
 }

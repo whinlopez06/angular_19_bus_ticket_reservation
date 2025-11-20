@@ -4,11 +4,13 @@
       <i class="fa fa-bus me-2"></i>BusBooking
     </a>
 
+    <!-- Burger toggler -->
     <button
       class="navbar-toggler"
       type="button"
       data-bs-toggle="collapse"
       data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
       aria-expanded="false"
       aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -16,34 +18,28 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <!-- normal link-->
-        <!-- <li class="nav-item">
-          <a class="nav-link" routerLink="/search" routerLinkActive="active">Home</a>
-        </li> -->
 
-        <!-- ✅ Dropdown Menu -->
+        <!-- Schedules dropdown -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
+             href="#"
+             id="navbarDropdown"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             (click)="$event.preventDefault()">
             Schedules
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-end"
-              aria-labelledby="navbarDropdown">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
             <li>
               <a class="dropdown-item"
-                [routerLink]="['/search-result']"
-                [queryParams]="{fromId: 0, toId: 0, schedDate: ''}">
+                 [routerLink]="['/search-result']"
+                 [queryParams]="{fromId: 0, toId: 0, schedDate: ''}">
                 View Schedules
               </a>
             </li>
-
             <li><hr class="dropdown-divider"></li>
-
             <li>
               <a class="dropdown-item" routerLink="/bus-scheduling">
                 Manage Schedules
@@ -52,43 +48,32 @@
           </ul>
         </li>
 
-        <!-- ✅ Another Dropdown -->
-        <!-- <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="bookingDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
+        <!-- Additional dropdown example (optional) -->
+        <!--
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle"
+             href="#"
+             id="bookingDropdown"
+             role="button"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             (click)="$event.preventDefault()">
             Bookings
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="bookingDropdown">
             <li>
-              <a class="dropdown-item" routerLink="/bookings/history" routerLinkActive="active">
-                Booking History
-              </a>
+              <a class="dropdown-item" routerLink="/bookings/history">Booking History</a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/bookings/new" routerLinkActive="active">
-                New Booking
-              </a>
+              <a class="dropdown-item" routerLink="/bookings/new">New Booking</a>
             </li>
           </ul>
-        </li> -->
-
-
-        <!-- login - commented for the meantime -->
-        <!-- <li class="nav-item">
-          <a class="nav-link" data-bs-toggle="modal" data-bs-target="#authModal">
-            <i class="fa fa-arrow-right me-1"></i>Login
-          </a>
-        </li> -->
+        </li>
+        -->
 
       </ul>
     </div>
   </div>
 </nav>
-
-
+<app-bootstrap-loader></app-bootstrap-loader>
 <router-outlet></router-outlet>
