@@ -6,20 +6,32 @@
             <div class="card-body">
                <div class="d-flex justify-content-between align-items-center">
                   <div>
-                     <h5 class="card-title mb-1">{{busScheduleData().bus_name}}</h5>
-                     <h6 class="mb-1">{{busScheduleData().from_bus_location}} <i class="fas fa-long-arrow-alt-right"></i> {{busScheduleData().to_bus_location}}</h6>
+                    <h5 class="card-title mb-1">
+                      <i class="fa fa-bus me-1"></i>
+                      <span>{{ busScheduleData().bus_name }}</span> -
+                       <span>{{ busScheduleData().description }}</span>
+                    </h5>
+                     <h6 class="mb-2">
+                      <i class="fas fa-location-arrow me-2"></i>
+                      <span class="me-2">{{ busScheduleData().from_bus_location }}</span>
+                      <i class="fas fa-long-arrow-alt-right"></i>
+                      <span class="ms-2">{{ busScheduleData().to_bus_location }}</span>
+                    </h6>
                   </div>
                   <div class="text-end">
                      <p class=" mb-0">
-                        <i class="bi bi-calendar3 me-2"></i>{{busScheduleData().schedule_date | date:'dd MMM yyyy'}}
+                        <i class="far fa-calendar-check me-1"></i>
+                        {{ formatDate(busScheduleData().schedule_date) }}
                         <span class="mx-2">•</span>
-                        <i class="bi bi-clock me-2"></i>
-                        <!-- {{busScheduleData().departure_time ? ('1970-01-01T' + busScheduleData().departure_time | date:'hh:mm a') : 'No time' }} -->
-                        <span [appTimeFormat]="busScheduleData().departure_time"></span> -
-                        <span [appTimeFormat]="busScheduleData().arrival_time"></span>
+                        <i class="fa-solid fa-clock ms-1 me-1"></i>
+                        <span [appTimeFormat]="busScheduleData().departure_time"></span>
                      </p>
-                     <!-- <p class="mb-0">Duration: {{ busScheduleData().departure_time | timeDiff:busScheduleData().arrival_time }}</p> -->
-                      <p class="mb-0">Duration: <span appTimeDifference [departureTime]="busScheduleData().departure_time" [arrivalTime]="busScheduleData().arrival_time"></span>
+                      <p class="mb-0">
+                        <i class="fas fa-chair me-1"></i>
+                        <span>{{ busScheduleData().seat_capacity }}</span>
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-ticket me-2"></i>
+                        <span>P {{ busScheduleData().price }}</span>
                       </p>
                   </div>
                </div>
@@ -33,20 +45,19 @@
             <div class="card-body">
 
                <div class="d-flex justify-content-between align-items-center mb-4">
-                  <h5 class="card-title mb-0">Select Seats</h5>
+                  <h5 class="card-title mb-0 ms-2">Select Seats</h5>
                   <div class="seat-legend text-center">
                       <span class="me-3 d-inline-flex flex-column align-items-center">
                         <i class="bi bi-square me-1 mb-0"></i>Available
-                        <small class="text-muted">{{scheduleBooking().availableSeats}}</small>
+                        <small class="text-muted">{{ scheduleBooking().availableSeats }}</small>
                       </span>
                       <span class="me-3 d-inline-flex flex-column align-items-center">
                         <i class="bi bi-square-fill text-secondary me-1"></i>Booked
-                        <small class="text-muted">{{scheduleBooking().bookedSeats}}</small>
+                        <small class="text-muted">{{ scheduleBooking().bookedSeats }}</small>
                       </span>
-
                       <span class="me-3 d-inline-flex flex-column align-items-center">
                         <i class="bi bi-square-fill text-secondary me-1"></i>Selected
-                        <small class="text-muted">{{scheduleBooking().selectedSeats}}</small>
+                        <small class="text-muted">{{ scheduleBooking().selectedSeats }}</small>
                       </span>
                   </div>
                </div>
@@ -67,11 +78,13 @@
                         @if (!isSeatBooked(seatNo)) {
                           <button class="seat available"
                               [ngClass]="isSeatSelected(seatNo) ? 'selected' : ''"
-                              (click)="onSelectSeat(seatNo)">{{seatNo}}
+                              (click)="onSelectSeat(seatNo)">{{ seatNo }}
                           </button>
                         } @else {
                             <button class="seat booked" [disabled]="true"
-                              [appTooltip]="getTooltipText(seatNo)" [showDelay]="500" [hideDelay]="5000">
+                              [appTooltip]="getTooltipText(seatNo)"
+                              [showDelay]="500"
+                              [hideDelay]="5000">
                               {{ seatNo }}
                             </button>
                         }
@@ -79,7 +92,7 @@
                     </div>
                   </div>
                  } @else {
-                  <p class="text-muted">Loading bus schedule seats..</p>
+                  <p class="text-muted">Loading bus schedule seats...</p>
                  }
                   <!-- /Seats -->
               </div>
@@ -92,7 +105,6 @@
          <div class="card booking-summary">
             <div class="card-body">
                <h5 class="card-title mb-4">Booking Summary</h5>
-
                <!-- Selected Seats -->
                <div class="selected-seats mb-4">
                   <h6 class="mb-3">Selected Seats</h6>
@@ -102,7 +114,7 @@
                     } @else {
                      <div class="selected-seat-tags">
                         @for (selectedSeat of selectedSeatArray(); track $index) {
-                          <span class="badge bg-primary me-2 mb-2">{{selectedSeat.seat_number}}</span>
+                          <span class="badge bg-primary me-2 mb-2">{{ selectedSeat.seat_number }}</span>
                         }
                      </div>
                     }
@@ -110,40 +122,60 @@
                </div>
                <!-- Contact Details -->
                <div class="contact-details mb-4">
-                  @if (selectedSeatArray.length > 0) {
+                  @if (selectedSeatArray().length > 0) {
                     <h6 class="mb-3">Contact Details</h6>
                   }
-                  @for (selectedSeat of selectedSeatArray(); track $index) {
-                    <div class="row">
-                        <div class="col-3">
-                          <label class="form-label">Fullname:</label>
-                          <input type="text" [(ngModel)]="selectedSeat.fullname" class="form-control" placeholder="First, MI, Last">
-                        </div>
-                        <div class="col-3">
-                          <label for="" class="form-label">Email:</label>
-                          <input type="text" [(ngModel)]="selectedSeat.email_address" class="form-control" placeholder="Email address">
-                        </div>
-                        <div class="col-3">
-                          <label class="form-label">Age:</label>
-                          <input type="number" [(ngModel)]="selectedSeat.age" class="form-control" placeholder="Enter Age">
-                        </div>
-                        <div class="col-3">
-                          <label class="form-label mb-2">Gender:</label>
-                          <div>
-                            <input type="radio" [(ngModel)]="selectedSeat.gender" value="M" [name]="'gender'+$index">Male
-                            <input type="radio" [(ngModel)]="selectedSeat.gender" value="F" [name]="'gender'+$index">Female
+                  <form #busBookingForm="ngForm" (ngSubmit)="bookTicket()">
+                    @for (selectedSeat of selectedSeatArray(); track $index) {
+                      <div class="row">
+                          <div class="col-3">
+                            <label class="form-label">Fullname:</label>
+                            <input type="text"
+                              [name]="'fullname' + $index"
+                              [(ngModel)]="selectedSeat.fullname"
+                              class="form-control"
+                              placeholder="First, MI, Last" required>
                           </div>
-                        </div>
-                    </div>
-                  }
+                          <div class="col-3">
+                            <label for="" class="form-label">Email:</label>
+                            <input type="text"
+                              [name]="'email' + $index"
+                              [(ngModel)]="selectedSeat.email_address"
+                              class="form-control"
+                              placeholder="Email address" required>
+                          </div>
+                          <div class="col-3">
+                            <label class="form-label">Age:</label>
+                            <input type="number"
+                              [name]="'age' + $index"
+                              [(ngModel)]="selectedSeat.age"
+                              class="form-control"
+                              placeholder="Enter Age" required>
+                          </div>
+                          <div class="col-3">
+                            <label class="form-label mb-2">Gender:</label>
+                            <div>
+                              <input type="radio"
+                                [(ngModel)]="selectedSeat.gender" value="M"
+                                [name]="'gender' + $index" required />Male
+                              <input type="radio"
+                                [(ngModel)]="selectedSeat.gender"
+                                value="F"
+                                [name]="'gender' + $index" required />Female
+                            </div>
+                          </div>
+                      </div>
+                    }
+                  <button type="submit"
+                      class="btn btn-primary w-100 mt-4"
+                      [disabled]="selectedSeatArray().length == 0 || busBookingForm.invalid">
+                      <i class="bi bi-credit-card me-2"></i>Book Ticket
+                  </button>
+                </form>
                </div>
-
-               <button (click)="bookTicket()" type="button" class="btn btn-primary w-100">
-                  <i class="bi bi-credit-card me-2"></i>Book Ticket
-               </button>
-
-            </div>
+            </div><!-- /card-body -->
          </div>
       </div>
+      <!-- /Booking Summary-->
    </div>
 </div>

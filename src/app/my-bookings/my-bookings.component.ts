@@ -31,7 +31,6 @@ export class MyBookingsComponent implements OnInit {
     this.busScheduleService.getBusScheduleById(scheduleId).pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((result: BusScheduleListApi) => {
       this.busScheduleData = result;
-      console.log('busScheduleData:...', this.busScheduleData);
     });
   }
 

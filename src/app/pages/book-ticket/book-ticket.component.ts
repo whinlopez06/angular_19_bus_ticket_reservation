@@ -3,21 +3,20 @@ import { ActivatedRoute } from '@angular/router';
 import { BusScheduleListApi } from '../../interface/busSchedule.interface';
 import { BusScheduleService } from '../../services/bus-schedule.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TimeDifferencePipe } from '../../pipes/time-difference.pipe';
-import { DatePipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BusScheduleBookingServiceService } from '../../services/bus-schedule-booking-service.service';
-import { BusScheduleBookingApi, BusScheduleBookingSeatApi } from '../../interface/busScheduleBooking.interface';
+import { BusScheduleBookingApi, BusScheduleBookingSeatApi, ScheduleBooking } from '../../interface/busScheduleBooking.interface';
 import { TooltipDirective } from '../../directive/tooltip.directive';
 import { TimeFormatDirective } from '../../directive/time-format.directive';
 import { TimeDifferenceDirective } from '../../directive/time-difference.directive';
-
+import { ToastService } from '../../shared/toast.service';
+import { formatDate } from '../../shared/date-format-handler';
 
 @Component({
   selector: 'app-book-ticket',
   standalone: true,
-  imports: [TimeDifferencePipe, NgClass, FormsModule, DatePipe,
-    TooltipDirective, TimeFormatDirective, TimeDifferenceDirective],
+  imports: [NgClass, FormsModule, TooltipDirective, TimeFormatDirective, TimeDifferenceDirective],
   templateUrl: './book-ticket.component.html',
   styleUrl: './book-ticket.component.css'
 })
@@ -27,9 +26,12 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
   activatedRoute = inject(ActivatedRoute);
   busScheduleService = inject(BusScheduleService);  // service for bus schedule
   busScheduleBookingService = inject(BusScheduleBookingServiceService); // service for schedule booking
+  private toast = inject(ToastService);
+  formatDate = formatDate;
 
   busScheduleData = signal<BusScheduleListApi>({
     id: 0,
+    bus_detail_id: 0,
     operator_name: '',
     bus_name: '',
     description: '',
@@ -41,21 +43,26 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
     seat_capacity: 0,
     price: 0.0
   });
+
   seatNumberList = signal<number[]>([]);
   selectedSeatArray = signal<BusScheduleBookingApi[]>([]);
   bookedSeatList = signal<BusScheduleBookingSeatApi[]>([]); // reference for booked seat
-  scheduleBooking = signal<{scheduleId: number, availableSeats: number, bookedSeats: number, selectedSeats: number}>
-                           ({scheduleId: 0, availableSeats: 0, bookedSeats: 0, selectedSeats: 0});
+  scheduleBooking = signal<ScheduleBooking>({
+    scheduleId: 0,
+    availableSeats: 0,
+    bookedSeats: 0,
+    selectedSeats: 0
+  });
 
   showBusSeats: boolean = false;
   tooltipVisible: boolean = false;
   tooltipText: string = '';
   tooltipStyle: any = {};
 
-
   constructor() {
-    this.activatedRoute.params.subscribe((result: any) => {
-      const scheduleId = result.scheduleId;
+    this.activatedRoute.params
+    .subscribe((result: any) => {
+      const scheduleId = Number(result.scheduleId);
       if (scheduleId) {
         this.scheduleBooking.update(prev => ({...prev, scheduleId: scheduleId}));
         this.getBusScheduleById(scheduleId);  // get schedule details
@@ -64,7 +71,7 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.getBusBookedSeats(Number(this.scheduleBooking().scheduleId));
+    this.loadBusBookedSeats(Number(this.scheduleBooking().scheduleId));
   }
 
   ngAfterViewInit(): void {
@@ -99,7 +106,7 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
   }
 
   // triggers when click/select of seat
-  onSelectSeat(seatNumber: any) {
+  onSelectSeat(seatNumber: any): void {
     const isExistIndex = this.selectedSeatArray().findIndex(i => i.seat_number == seatNumber)
     if (isExistIndex >= 0) {
       this.selectedSeatArray().splice(isExistIndex, 1);
@@ -124,30 +131,41 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
     }
   }
 
-  getBusScheduleById(scheduleId: number) {
+  getBusScheduleById(scheduleId: number): void {
     this.busScheduleService.getBusScheduleById(scheduleId)
     .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe((result: BusScheduleListApi) => {
-        this.busScheduleData.set(result);
-        this.scheduleBooking.update(prev => ({...prev, availableSeats: this.busScheduleData().seat_capacity}));
+    .subscribe({
+      next: busSchedule => {
+        this.busScheduleData.set(busSchedule);
+        this.scheduleBooking.update(prev => ({...prev,
+          availableSeats: this.busScheduleData().seat_capacity
+        }));
         // populate seats array from API result
         for(let index = 1; index <= this.busScheduleData().seat_capacity; index++) {
           this.seatNumberList().push(index);
         }
+      },
+      error: err => {
+        this.toast.showError(err.message);
+      }
     });
   }
 
-  getBusBookedSeats(scheduleId: number) {
+  loadBusBookedSeats(scheduleId: number): void {
     this.busScheduleBookingService.getBusBookedSeats(scheduleId)
     .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe((result: any) => {
-        this.bookedSeatList.set(result);
+    .subscribe({
+      next: busBookedSeats => {
+        this.bookedSeatList.set(busBookedSeats);
         this.scheduleBooking.update(prev => ({...prev,
-          bookedSeats: result.length,
-          availableSeats: this.busScheduleData().seat_capacity - result.length
+          bookedSeats: busBookedSeats.length,
+          availableSeats: this.busScheduleData().seat_capacity - busBookedSeats.length
         }));
         this.showBusSeats = true;
-        console.log('bookedSeatList:...', this.bookedSeatList());
+      },
+      error: err => {
+        this.toast.showError(err.message);
+      }
     });
   }
 
@@ -161,14 +179,16 @@ export class BookTicketComponent implements OnInit, AfterViewInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: (result: any) => {
-        alert(result.message);
+        this.toast.showSuccess(result.message);
         // reset state
         this.selectedSeatArray.set([]); // reset the signal
-        this.scheduleBooking.update(prev => ({...prev, selectedSeats: 0}));
-        this.getBusBookedSeats(this.scheduleBooking().scheduleId);
-      }, error: (error) => {
-        console.error('Booking failed:', error);
-        alert('Booking failed. Please try again.');
+        this.scheduleBooking.update(prev => ({...prev,
+          selectedSeats: 0
+        }));
+        this.loadBusBookedSeats(this.scheduleBooking().scheduleId);
+      }, error: err => {
+        this.toast.showError('Booking failed. Please try again');
+        this.toast.showError(err.message);
       }
     });
   }

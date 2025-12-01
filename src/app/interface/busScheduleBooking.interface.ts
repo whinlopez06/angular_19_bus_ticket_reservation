@@ -13,3 +13,10 @@ export interface BusScheduleBookingSeatApi {
   age?: number;
   gender: string;
 }
+
+export interface ScheduleBooking {
+  scheduleId: number,
+  availableSeats: number,
+  bookedSeats: number,
+  selectedSeats: number
+}

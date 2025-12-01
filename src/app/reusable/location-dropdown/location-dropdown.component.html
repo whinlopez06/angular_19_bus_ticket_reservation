@@ -5,11 +5,10 @@
   </label>
   <select class="form-select"
     [ngModel]="selectedValue()"
-    (ngModelChange)="onValueChange($event)"
->
+    (ngModelChange)="onValueChange($event)">
     <option [value]="0">Select Location</option>
-    @for (locationList of busLocationList; track $index) {
-      <option [value]="locationList.id">{{locationList.name}}</option>
+    @for (option of options; track $index) {
+      <option [value]="option.id">{{option.name}}</option>
     }
   </select>
 <!-- </div> -->

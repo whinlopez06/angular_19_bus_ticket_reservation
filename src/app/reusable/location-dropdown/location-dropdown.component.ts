@@ -29,23 +29,23 @@ export class LocationDropdownComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getLocations();
+    if (this.options.length == 0) {
+        this.getLocations();
+    }
   }
 
-  // onValueChange(value: any) {
-  //   this.selectedValue = value;
-  //   this.selectedValueChange.emit(this.selectedValue);
-  // }
-
   // signal version
-  onValueChange(value: number) {
+  onValueChange(value: number): void {
     this.selectedValue.set(value);
+    this.selectedValueChange.emit(this.selectedValue());
   }
 
   getLocations() {
-    this.busService.getLocations().pipe(takeUntilDestroyed(this.destroyRef))
+    this.busService.getLocations()
+    .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe((result: any) => {
-      this.busLocationList = result;
+      //this.busLocationList = result;
+      this.options = result;
     });
   }
 

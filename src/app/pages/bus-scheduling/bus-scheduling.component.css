@@ -14,3 +14,21 @@
   font-style: italic; /* Optional: Style the placeholder text font style */
   margin-left: 5px; /* Optional: Add some spacing */
 }
+
+.custom-modal-width {
+  max-width: 500px;   /* or any value */
+  .schedule-date-input {
+    max-width: 140px;
+  }
+}
+
+.table-hover tbody tr:hover {
+  /* cursor: pointer; */
+}
+
+@media (max-width: 576px) {
+  .modal-dialog {
+    max-width: 90% !important;
+    margin: auto;
+  }
+}

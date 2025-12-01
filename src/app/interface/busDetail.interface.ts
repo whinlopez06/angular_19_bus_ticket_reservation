@@ -24,8 +24,9 @@ export interface BusDetailApi {
 // interface of data coming from API
 export interface BusDetailBusApi {
   id: number,
-  operator_name: string,
+  operator_name?: string,
   bus_name: string,
-  bus_full_description: string,
-  seat_capacity: number
+  bus_full_description?: string,
+  seat_capacity?: number,
+  price?: number
 }

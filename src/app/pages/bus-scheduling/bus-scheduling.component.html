@@ -1,128 +1,30 @@
 <div class="container my-5">
-
   <div class="row">
     <div class="col-12 mb-4">
-      <!--Bus Scheduling Form-->
-      <div class="card">
-        <div class="card-body">
-          <div class="mb-3"><h3>Bus Scheduling Form</h3></div>
-
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <app-location-dropdown
-                label="From location"
-                icon="fa-map-marker-alt"
-                (selectedValueChange)="handleOnChildFromLocation($event)"
-                [selectedValue]="dropDownFromLocationValue" ></app-location-dropdown>
-            </div>
-            <div class="col-md-4">
-              <app-location-dropdown
-                label="To location"
-                icon="fa-map-marker-alt"
-                (selectedValueChange)="handleOnChildToLocation($event)"
-                [selectedValue]="dropDownToLocationValue"></app-location-dropdown>
-            </div>
-            <div class="col-md-4">
-              <div class="col-12 mb-1 d-flex justify-content-between">
-                <!-- single date-->
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="toggleOptions" value="option1"
-                    data-bs-toggle="tooltip"data-bs-placement="top" title="Single date scheduling only"
-                    (change)="dateRadioChange('option1')">
-                  <label class="form-check-label">Single date</label>
-                </div>
-                <!-- multiple date-->
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="toggleOptions" value="option2"
-                    data-bs-toggle="tooltip"data-bs-placement="top" title="Multiple date scheduling"
-                    (change)="dateRadioChange('option2')">
-                  <label class="form-check-label" for="toggle2">Date range</label>
-                </div>
-              </div>
-              @if (selectedOption == 'option1') {
-                <div class="col-6">
-                    <input type="date" name="travelDate" [(ngModel)]="busScheduleParams.scheduleDate" class="form-control">
-                </div>
-              } @else {
-                <div class="col-12">
-                  <div class="d-flex gap-3">
-                    <input type="date" name="dateFrom" class="form-control">
-                    <input type="date" name="dateTo" class="form-control" >
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-
-          <div class="row mb-4">
-            <div class="col-md-4">
-              <label for="" class="form-label">Departure time</label>
-              <input type="time" [(ngModel)]="busScheduleParams.departureTime" name="departureTime" class="form-control">
-            </div>
-            <div class="col-md-4">
-              <label for="" class="form-label">Arrival time</label>
-              <input type="time" [(ngModel)]="busScheduleParams.arrivalTime" name="arrivalTime" class="form-control">
-            </div>
-            <div class="col-md-4">
-              <label for="" class="form-label">Duration</label>
-              <input type="text" name="duration" class="form-control"
-                [value]="busScheduleParams.departureTime | timeDiff:busScheduleParams.arrivalTime" disabled readonly>
-            </div>
-          </div>
-
-          <div class="row mb-4">
-            <div class="col-md-4">
-              <label for="" class="form-label">Bus name</label>
-              <select [(ngModel)]="busIndexValue" class="form-select" (change)="onBusChange($event)">
-                <option [value]="0">Please Select Bus</option>
-                @for (busDetail of busDetails; track $index) {
-                  <option [value]="busDetail.id">{{busDetail.bus_full_description}}</option>
-                }
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label for="" class="form-label">Operator</label>
-              <input type="text" name="operatorName" [(ngModel)]="operatorName" [value]="operatorName" class="form-control" disabled readonly>
-            </div>
-            <div class="col-md-2">
-              <label for="" class="form-label">Seat capacity</label>
-              <input type="text" name="seatCapacity" [(ngModel)]="seatCapacity" class="form-control" [value]="seatCapacity" disabled readonly>
-            </div>
-          </div>
-          <!-- buttons -->
-          <div class="row mb-3">
-            <div class="col-md-8"></div>
-            <div class="col-md-4 d-grid gap-2 d-md-flex justify-content-md-start">
-              <button type="button" class="btn btn-outline-primary" (click)="createBusSchedule()">Save</button>
-              <button type="button" class="btn btn-outline-warning">Update</button>
-              <button type="button" class="btn btn-outline-danger">Delete</button>
-              <button type="button" class="btn btn-outline-secondary">Cancel</button>
-            </div>
-          </div>
-        </div> <!--/.card-body-->
-      </div> <!--/.card -->
 
       <!--Bus Scheduling table-->
-      <div class="row mt-5">
+      <div class="row mt-4">
         <div class="col-12">
-          <h4>Bus Schedules</h4>
+           <div class="d-flex justify-content-between align-items-center">
+              <h3>Bus Schedules</h3>
+              <button class="btn btn-primary mb-3" (click)="openModal('create')">Add Schedule</button>
+           </div>
 
           @if (busScheduleList().length > 0) {
             <div class="table-responsive">
-              <table class="table table-striped table-bordered align-middle">
+              <table class="table table-striped table-bordered align-middle table-hover">
                 <thead class="table-light">
                   <tr>
                     <th>#</th>
-                    <th>From Location</th>
-                    <th>To Location</th>
-                    <th>Bus Name</th>
-                    <th>Operator</th>
-                    <th>Schedule Date</th>
-                    <th>Departure</th>
-                    <th>Arrival</th>
-                    <th>Duration</th>
-                    <th>Seat Capacity</th>
-                    <th>Price</th>
+                    <th class="text-center">From Location</th>
+                    <th class="text-center">To Location</th>
+                    <th class="text-center">Bus Name</th>
+                    <th class="text-center">Operator</th>
+                    <th class="text-center">Schedule Date</th>
+                    <th class="text-center">Departure</th>
+                    <th class="text-center">Seat Capacity</th>
+                    <th class="text-center">Price</th>
+                    <th class="text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -133,12 +35,14 @@
                       <td>{{busSchedule.to_bus_location}}</td>
                       <td>{{busSchedule.bus_full_description}}</td>
                       <td>{{busSchedule.operator}}</td>
-                      <td>{{busSchedule.schedule_date}}</td>
-                      <td>{{busSchedule.departure_time ? ('1970-01-01T' + busSchedule.departure_time | date:'hh:mm a') : 'No time' }}</td>
-                      <td>{{busSchedule.arrival_time ? ('1970-01-01T' + busSchedule.arrival_time | date:'hh:mm a') : 'No time' }}</td>
-                      <td>{{busSchedule.departure_time| timeDiff:busSchedule.arrival_time}}</td>
-                      <td>{{busSchedule.seat_capacity}}</td>
-                      <td>{{busSchedule.price}}</td>
+                      <td class="text-center">{{ formatDate(busSchedule.schedule_date) }}</td>
+                      <td class="text-center"><span [appTimeFormat]="busSchedule.departure_time"></span></td>
+                      <td class="text-center">{{ busSchedule.seat_capacity }}</td>
+                      <td class="text-center">{{ busSchedule.price }}</td>
+                      <td>
+                        <button class="btn btn-outline-info btn-sm me-2" (click)="editBusSchedule(busSchedule)">Edit</button>
+                        <button class="btn btn-outline-danger btn-sm">Delete</button>
+                      </td>
                     </tr>
                   }
                 </tbody>
@@ -150,6 +54,147 @@
 
         </div> <!--/.card-body-->
       </div><!--/.card-->
+
+      <!--Bootstrap Modal-->
+      <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" data-bs-display="static" id="scheduleModal" tabindex="-1">
+        <div class="modal-dialog custom-modal-width">
+          <div class="modal-content rounded-3">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Bus Scheduling Form</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body form-control">
+              <form>
+                <div class="mt-2 mb-3">
+                  <app-location-dropdown
+                    label="From location"
+                    icon="fa-map-marker-alt"
+                    (selectedValueChange)="handleOnChildFromLocation($event)"
+                    [selectedValue]="dropDownFromLocationValue">
+                  </app-location-dropdown>
+                </div>
+                <!-- [options]="[{id: 1, name: 'New york'}, {id: 2, name: 'London'}, {id: 3, name:'Tokyo'}]" -->
+                <div class="mb-3">
+                  <app-location-dropdown
+                    label="To location"
+                    icon="fa-map-marker-alt"
+                    (selectedValueChange)="handleOnChildToLocation($event)"
+                    [selectedValue]="dropDownToLocationValue">
+                  </app-location-dropdown>
+                </div>
+
+                <div class="mb-1">
+                  <label class="form-label">
+                    <i class="far fa-calendar-check me-1"></i>Date type: (Schedule date)
+                  </label>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+                  <select class="form-select w-auto"
+                      [(ngModel)]="dateType"
+                      name="dateType">
+                    <option value="single">Single date</option>
+                    <option value="multiple">Multiple dates</option>
+                  </select>
+
+                  @if (dateType == 'single') {
+                    <input type="date"
+                          class="form-control w-auto schedule-date-input"
+                          [(ngModel)]="busScheduleParams().scheduleDate"
+                          [ngModelOptions]="{standalone: true}"
+                          name="singleDate">
+                  }
+
+                  @if (dateType == 'multiple') {
+                    <input type="date"
+                          class="form-control w-auto schedule-date-input"
+                          [(ngModel)]="startDate"
+                          [ngModelOptions]="{standalone: true}"
+                          name="startDate">
+
+                    <input type="date"
+                          class="form-control w-auto schedule-date-input"
+                          [(ngModel)]="endDate"
+                          [ngModelOptions]="{standalone: true}"
+                          name="endDate">
+                  }
+                </div>
+
+                <div class="mb-3">
+                  <label for="" class="form-label">
+                    <i class="fa-solid fa-clock me-1"></i>Departure time
+                  </label>
+                  <input type="time"
+                    [(ngModel)]="busScheduleParams().departureTime"
+                    name="departureTime"
+                    class="form-control">
+                </div>
+
+                <div class="mb-3">
+                  <label for="" class="form-label">
+                    <i class="fa-solid fa-clock me-1"></i>Arrival time (Optional)
+                  </label>
+                  <input type="time"
+                    [(ngModel)]="busScheduleParams().arrivalTime"
+                    name="arrivalTime"
+                    class="form-control">
+                </div>
+
+                <div class="mb-3">
+                  <app-bus-dropdown
+                    label="Bus name"
+                    icon="fa-bus"
+                    (selectedValueChange)="handleOnChildBusDetail($event)"
+                    (selectedObject)="handleOnChildBusOptions($event)"
+                    [selectedValue]="dropDownBusValue">
+                  </app-bus-dropdown>
+                </div>
+
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                      <label for="" class="form-label">
+                        <i class="fas fa-chair me-1"></i>Seat capacity
+                      </label>
+                      <input type="text"
+                        name="seatCapacity"
+                        [(ngModel)]="seatCapacity"
+                        class="form-control"
+                        [value]="seatCapacity"
+                        disabled readonly>
+                    </div>
+                    <div>
+                      <label for="" class="form-label">
+                        <i class="fas fa-ticket me-2"></i>Price
+                      </label>
+                      <input type="text"
+                        name="price"
+                        [(ngModel)]="price"
+                        class="form-control"
+                        [value]="price"
+                        disabled readonly>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <div class="modal-footer">
+              @if (modalMode == 'create') {
+                <button type="button" class="btn btn-outline-success w-25" (click)="createBusSchedule()">Save</button>
+              }
+              @if (modalMode == 'update') {
+                <button type="button" class="btn btn-outline-warning w-25" (click)="updateBusSchedule()">Update</button>
+              }
+              <button type="button" class="btn btn-outline-secondary w-25" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+          </div>
+        </div>
+      </div><!-- /bootstrap modal -->
+
 
     </div><!--/.col-12 mb-4-->
 

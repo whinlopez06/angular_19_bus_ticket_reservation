@@ -1,0 +1,32 @@
+<label for="" class="form-label">
+  <i class="fa" [ngClass]="icon + ' me-1'"></i>{{ label }}
+</label>
+<select class="form-select"
+  [ngModel]="selectedValue()"
+  (ngModelChange)="onValueChange($event)">
+  <option [value]="0">{{ defaultOption }}</option>
+  @for (option of options; track $index) {
+    <option [value]="option.id">
+      @if (option.bus_full_description) {
+        {{ option.bus_full_description }}
+      } @else {
+        {{ option.bus_name }}
+      }
+    </option>
+  }
+</select>
+
+
+  <!-- <label for="" class="form-label">
+    <i class="fa fa-bus me-1"></i>Bus name</label>
+  <select class="form-select"
+    [ngModel]="busIndexValue()"
+    (ngModelChange)="onBusChange($event)"
+    name="busName">
+    <option [value]="0">Select bus</option>
+    @for (busDetail of busDetails(); track $index) {
+      <option [value]="busDetail.id">
+        {{ busDetail.bus_full_description }}
+      </option>
+    }
+  </select> -->

@@ -1,0 +1,8 @@
+<label class="form-label">
+  <i class="far" [ngClass]="icon +' me-1'"></i>{{ label }}
+</label>
+<input type="date"
+  class="form-control"
+  name="travelDate"
+  [ngModel]="selectedDate()"
+  (ngModelChange)="onValueChange($event)">

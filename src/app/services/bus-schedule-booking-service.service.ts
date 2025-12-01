@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject, catchError, throwError, map } from 'rxjs';
+import { catchError, throwError, map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-
+import { BusScheduleBookingSeatApi } from '../interface/busScheduleBooking.interface';
+import { handleHttpError } from '../shared/error-handler';
+import { BusScheduleBookingApi } from '../interface/busScheduleBooking.interface';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +15,7 @@ export class BusScheduleBookingServiceService {
   constructor(private http: HttpClient) {
   }
 
-  createNewBooking(objectParams:any[]) {
+  createNewBooking(objectParams:BusScheduleBookingApi[]) {
     console.log('createNewBooking - objectParams:...', objectParams);
     return this.http.post(this.apiUrl + `bus-schedule-booking/store`, objectParams)
       .pipe(
@@ -24,8 +26,8 @@ export class BusScheduleBookingServiceService {
       );
   }
 
-  getBusBookedSeats(scheduledId: number) {
-    return this.http.get(`${this.apiUrl}bus-schedule-booking/${scheduledId}`)
+  getBusBookedSeats(scheduledId: number): Observable<BusScheduleBookingSeatApi[]> {
+    return this.http.get<BusScheduleBookingSeatApi[]>(`${this.apiUrl}bus-schedule-booking/${scheduledId}`)
       .pipe(
         catchError(err => {
           console.error('Error creating booking: ', err);

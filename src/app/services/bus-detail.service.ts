@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, BehaviorSubject, catchError, throwError, map } from 'rxjs';
 import { BusDetailBusApi } from '../interface/busDetail.interface';
 import { environment } from '../../environments/environment';
+import { handleHttpError } from '../shared/error-handler';
 
 @Injectable({
   providedIn: 'root'
@@ -13,13 +14,10 @@ export class BusDetailService {
 
 
     // BusDetailBusInfoApi
-    getBusesDetail(): Observable<BusDetailBusApi> {
-      return this.http.get<BusDetailBusApi>(this.apiUrl + 'bus-detail/buses')
+    getBusesDetail(): Observable<BusDetailBusApi[]> {
+      return this.http.get<BusDetailBusApi[]>(this.apiUrl + 'bus-detail/buses')
         .pipe(
-          catchError(err => {
-            console.error('Error connecting to api: ', err);
-            return throwError(() => new Error("Failed to get buses description"));
-          })
+          catchError(handleHttpError('Failed to get bus details'))
         );
     }
 }
