@@ -1,83 +1,79 @@
-<!-- Hero Section -->
 
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <!-- first column -->
+    <!-- 1st column (search form) -->
     <div class="col-md-5" >
       <div class="search-box p-4 shadow rounded">
         <h2 class="text-center mb-4">
-          <i class="fa-solid fa-ticket slant me-2"></i>Book Your Bus Ticket
+          <i class="fa-solid fa-ticket slant me-2"></i>Search for available trips
         </h2>
 
-        <form class="">
           <div class="row g-3">
             <div class="col-12">
               <app-location-dropdown
-                label="From location"
+                label="From"
                 icon="fa-map-marker-alt"
-                (selectedValueChange)="handleOnChildFromLocation($event)"
-                [selectedValue]="dropDownFromLocationValue">
+                [selectedValue]="dropdownFromLocationValue">
               </app-location-dropdown>
             </div>
 
             <div class="col-12">
               <app-location-dropdown
-                label="To location"
-                icon="fa-map-marker-alt"
-                (selectedValueChange)="handleOnChildToLocation($event)"
-                [selectedValue]="dropDownToLocationValue">
+                label="To"
+                icon="fa-location-arrow"
+                [selectedValue]="dropdownToLocationValue">
               </app-location-dropdown>
             </div>
 
             <div class="col-12" >
               <app-schedule-date-picker
-                label="Date of journey:"
+                label="Travel Date:"
                 icon="fa-calendar-check"
-                (selectedDateChange)="handleOnChildScheduleDate($event)"
-                [selectedDate]="scheduleDateValue">
+                [selectedDate]="travelDateValue">
               </app-schedule-date-picker>
             </div>
 
             <div class="col-12 text-center">
-              <button type="button" class="btn btn-primary btn-lg w-100" (click)="searchBus()">
-                <i class="fa fa-search-plus me-2"></i>Search buses
+              <button type="button" class="btn btn-primary btn-lg w-100" (click)="searchBusSchedules()">
+                <i class="fa fa-search-plus me-2"></i>Quick Search
               </button>
             </div>
 
           </div>
-        </form>
-
       </div><!--/search-box p-4 shadow rounded-->
     </div><!--/col-md-5-->
 
-    <!-- 2nd column -->
+
+    <!-- 2nd column (card) -->
     <div class="col-md-7" >
       <div class="available-routes p-3 shadow rounded scrollable-div">
         <h6 class="mb-3 text-center">
           <i class="fa fa-bus me-2" ></i>
-          Available routes
+          Available trips
         </h6>
-        @if (busScheduleSummaryList.length > 0) {
-          @for (busScheduleSummary of busScheduleSummaryList; track $index) {
+        @if (busScheduleSummaryList().length > 0) {
+          @for (busScheduleSummary of busScheduleSummaryList(); track $index) {
 
             <div class="card mb-3"
               [routerLink]="['/search-result']"
               [queryParams]="{
-                fromId :busScheduleSummary.location_from_id,
-                toId : busScheduleSummary.location_to_id,
-                schedDate : busScheduleSummary.schedule_date
+                fromId :busScheduleSummary.from_location_id,
+                toId : busScheduleSummary.to_location_id,
+                date : busScheduleSummary.travel_date
               }">
               <div class="card-body p-2">
                 <h6 class="mb-1" >
-                  <i class="fas fa-location-arrow me-1 text-primary"></i>
-                    {{busScheduleSummary.from_bus_location}}
-                  <i class="fa fa-arrow-right mx-2"></i>
-                    {{busScheduleSummary.to_bus_location}}
+                  <i class="fas fa-map-marker-alt"></i>
+                    {{ busScheduleSummary.from_location }}
+                  <span class="text-success px-2"> To </span>
+                  <!-- <i class="fa fa-arrow-right mx-2"></i> -->
+                  <i class="fas fa-location-arrow"></i>
+                    {{ busScheduleSummary.to_location }}
                 </h6>
 
                 <small class="text-muted d-block mb-1">
                   <i class="fa fa-calendar me-1"></i>
-                  {{ formatDate(busScheduleSummary.schedule_date) }}
+                  {{ formatDate(busScheduleSummary.travel_date, 'dd, MMMM yyyy') }}
                 </small>
 
                 <span class="badge bg-info text-dark">

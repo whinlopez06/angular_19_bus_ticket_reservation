@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LocationDropdownComponent } from '../../reusable/location-dropdown/location-dropdown.component';
@@ -27,36 +27,42 @@ export class BusSchedulingComponent implements OnInit {
   busScheduleService = inject(BusScheduleService);
   busDetailService = inject(BusDetailService);
   toast = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
   formatDate = formatDate;
 
   dropDownFromLocationValue = signal<number>(0);
   dropDownToLocationValue = signal<number>(0);
+  singleDate = signal<string>('');
   dropDownBusValue = signal<number>(0);
+  seatCapacity = signal<number>(0);
+  price = signal<number>(0);
+  buses = signal<any[]>([]);
+  busIndexValue = signal<number>(0);
 
   busDetails = signal<BusDetailBusApi[]>([]);
   busScheduleList = signal<BusScheduleList2Api[]>([]);
-  buses = signal<any[]>([]);
+
 
   //--
-  // defaultBusScheduleParams: BusSchedule = {
-  //   busDetailId: 0,
-  //   fromBusLocationId: 0,
-  //   toBusLocationId: 0,
-  //   departureTime: '',
-  //   arrivalTime: '',
-  //   scheduleDate: '',
-  //   seatCapacity: 0,
-  //   price: 0
-  // }
+  readonly defaultBusScheduleParams: BusSchedule = {
+    busDetailId: 0,
+    fromBusLocationId: 0,
+    toBusLocationId: 0,
+    departureTime: '',
+    arrivalTime: '',
+    scheduleDate: '',
+    seatCapacity: 0,
+    price: 0
+  }
 
-  // defaultBusScheduleParamsApi: BusScheduleApi = {
-  //   bus_detail_id: 0,
-  //   from_bus_location_id: 0,
-  //   to_bus_location_id: 0,
-  //   departure_time: '',
-  //   arrival_time: '',
-  //   schedule_date: ''
-  // };
+  readonly defaultBusScheduleParamsApi: BusScheduleApi = {
+    bus_detail_id: 0,
+    from_location_id: 0,
+    to_bus_location_id: 0,
+    departure_time: '',
+    arrival_time: '',
+    schedule_date: ''
+  };
 
   busScheduleParams = signal<BusSchedule>({
     busDetailId: 0,
@@ -69,35 +75,33 @@ export class BusSchedulingComponent implements OnInit {
 
   busScheduleParamsApi = signal<BusScheduleApi>({
     bus_detail_id: 0,
-    from_bus_location_id: 0,
+    from_location_id: 0,
     to_bus_location_id: 0,
     departure_time: '',
     arrival_time: '',
     schedule_date: ''
   });
+
+
   //busScheduleData!: BusScheduleListApi;
   busScheduleData = signal<any>;
 
   selectedOption: string = 'option1';
   //busIndexValue: number = 0;
-  busIndexValue = signal<number>(0);
-  singleDate = signal<string>('');
-  seatCapacity = signal<number>(0);
-  price = signal<number>(0);
-
   operatorName: string | null = "";
   dateType: 'single' | 'multiple' = 'single';
   startDate: string = '';
   endDate: string = '';
   modalReady: boolean = false;
   modalMode: string = 'create';
-  private destroyRef = inject(DestroyRef);
+
 
 
   constructor() {
   }
 
   ngOnInit(): void {
+
     this.closeModal();
     this.loadBusesName();
     this.loadBusScheduleLists();
@@ -119,7 +123,7 @@ export class BusSchedulingComponent implements OnInit {
     modal.show();
     setTimeout(() => {
       this.modalReady = true;
-    })
+    });
   }
 
   closeModal() {
@@ -130,22 +134,18 @@ export class BusSchedulingComponent implements OnInit {
 
 
   handleOnChildFromLocation(value: any): void {
-    console.log('handleOnChangeFromLocation - value:...', value);
     this.busScheduleParams().fromBusLocationId = Number(value);
   }
 
   handleOnChildToLocation(value: any): void {
-    // console.log('handleOnChangeToLocation - value:...', value);
     this.busScheduleParams().toBusLocationId = Number(value);
   }
 
   handleOnChildBusDetail(value: any) {
-    console.log('handleOnChildBusDetail - dropDownBusValue: ', this.dropDownBusValue());
     this.busScheduleParams().busDetailId = Number(value);
   }
 
   handleOnChildBusOptions(options: any) {
-    console.log('handleOnChildBusOptions - options: ...', options);
     this.seatCapacity = options.seat_capacity;
     this.price = options.price
   }
@@ -187,6 +187,7 @@ export class BusSchedulingComponent implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busSchedule => {
+        console.log('loadBusScheduleLists: ', busSchedule);
         this.busScheduleList.set(busSchedule);
       },
       error: err => {
@@ -212,7 +213,7 @@ export class BusSchedulingComponent implements OnInit {
     return false;
 
     this.busScheduleParamsApi().bus_detail_id = this.busScheduleParams().busDetailId;
-    this.busScheduleParamsApi().from_bus_location_id = this.busScheduleParams().fromBusLocationId;
+    this.busScheduleParamsApi().from_location_id = this.busScheduleParams().fromBusLocationId;
 
     console.log('busScheduleParamsApi:...', this.busScheduleParamsApi);
 
@@ -231,7 +232,7 @@ export class BusSchedulingComponent implements OnInit {
   }
 
   editBusSchedule(busSchedule: any) {
-    console.log('update :', busSchedule);
+    console.log('editBusSchedule: ', busSchedule);
     this.getBusScheduleById(busSchedule.id);
     this.openModal('update');
   }
@@ -248,8 +249,8 @@ export class BusSchedulingComponent implements OnInit {
         //this.busScheduleData.set(busScheduleData);
 
         //this.dropDownFromLocationValue.set(2);
-        this.dropDownFromLocationValue.set(busScheduleData.from_bus_location_id ?? 0);
-        this.dropDownToLocationValue.set(busScheduleData.to_bus_location_id ?? 0);
+        this.dropDownFromLocationValue.set(busScheduleData.from_location_id ?? 0);
+        this.dropDownToLocationValue.set(busScheduleData.to_location_id ?? 0);
         this.dropDownBusValue.set(busScheduleData.bus_detail_id);
         this.seatCapacity.set(busScheduleData.seat_capacity);
         this.price.set(busScheduleData.price);

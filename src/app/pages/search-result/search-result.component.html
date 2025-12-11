@@ -1,21 +1,22 @@
 <!-- Search Result -->
  <div class="container my-5">
+
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Available Buses</h2>
+    <h2 class="mb-0">Available Trips</h2>
     <div class="d-flex gap-2">
-      <button class="btn btn-outline-primary">
+      <!-- <button class="btn btn-outline-primary">
         <i class="fa fa-filter me-1"></i>Filter
       </button>
       <button class="btn btn-outline-primary">
         <i class="fa fa-sort me-1"></i>Sort
-      </button>
+      </button> -->
     </div>
   </div>
 
   <div class="row">
     <!-- Bus Card-->
-     @if (busScheduleLists.length > 0) {
-        @for (item of busScheduleLists; track $index) {
+     @if (busScheduleLists().length > 0) {
+        @for (busSchedule of busScheduleLists(); track $index) {
             <div class="col-12">
               <div class="card gradient-card">
                 <div class="gradient-left"></div> <!-- gradient stripe -->
@@ -25,17 +26,21 @@
 
                     <div class="col-md-2">
                       <h5 class="card-title">
-                        <i class="fa fa-bus me-2"></i>{{ item.bus_name }}
+                        <i class="fa fa-bus me-2"></i>{{ busSchedule.bus_name }}
                       </h5>
                       <h6 class="card-title ms-1">
-                        <i class="fa-solid fa-circle-info me-2"></i>{{ item.description }}
+                        <i class="fa-solid fa-circle-info me-2"></i>{{ busSchedule.description }}
                       </h6>
                     </div>
 
                     <div class="col-md-4">
                       <p class="mb-0 text-muted">Route</p>
-                      <h6 class="mb-0"><i class="fas fa-location-arrow me-1"></i>
-                        {{ item.from_bus_location }} - {{ item.to_bus_location }}
+                      <h6 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ busSchedule.from_location }}
+                        <span class="text-success px-1"> To </span>
+                        <i class="fas fa-location-arrow"></i>
+                         {{ busSchedule.to_location }}
                       </h6>
                     </div>
 
@@ -43,26 +48,26 @@
                       <p class="mb-0 text-muted">Date & Departure time</p>
                       <h6 class="mb-0">
                         <i class="far fa-calendar-check me-1"></i>
-                        <span class="me-1">{{ formatDate(item.schedule_date) }}</span> -
+                        <span class="me-1">{{ formatDate(busSchedule.travel_date) }}</span> -
                         <i class="fa-solid fa-clock ms-1 me-1"></i>
-                        <span [appTimeFormat]="item.departure_time"></span>
+                        <span [appTimeFormat]="busSchedule.boarding_time"></span>
                       </h6>
                     </div>
 
                     <div class="col-md-1">
                       <p class="mb-0 text-muted">Seats</p>
                       <h6 class="mb-0"><i class="fas fa-chair me-1"></i>
-                        {{ item.seat_capacity }}
+                        {{ busSchedule.seat_capacity }}
                       </h6>
                     </div>
 
                     <div class="col-md-1">
                       <p class="mb-0 text-muted">Price</p>
-                      <h6 class="mb-0"><i class="fas fa-ticket me-2"></i>{{item.price}}</h6>
+                      <h6 class="mb-0"><i class="fas fa-ticket me-2"></i>{{ busSchedule.price }}</h6>
                     </div>
 
                     <div class="col-md-1">
-                      <a [routerLink]="'/book-ticket/' + item.id" class="btn btn-success w-100">
+                      <a [routerLink]="'/ticket-reservation/' + busSchedule.id" class="btn btn-success w-100">
                         <i class="fa fa-arrow-right"></i>
                       </a>
                     </div>

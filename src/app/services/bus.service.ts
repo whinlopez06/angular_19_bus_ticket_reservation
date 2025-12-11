@@ -11,25 +11,18 @@ import { handleHttpError } from '../shared/error-handler';
   providedIn: 'root'
 })
 export class BusService {
-  private readonly apiUrl: string = environment.apiUrl; //'http://localhost:8000/api/';
+  private readonly apiUrl: string = environment.apiUrl;
 
   busLocations$ = new BehaviorSubject<BusLocation[]>([]);
 
   constructor(private http: HttpClient) {
   }
 
-  getLocations(): Observable<BusLocation[]> {
-    return this.http.get<BusLocation[]>(this.apiUrl + "bus-location")
-      .pipe(
-        catchError(handleHttpError('Failed to load bus locations'))
-      );
-  }
-
-  searchBusSchedule(params: BusScheduleSearch): Observable<BusScheduleListApi[]> {
+  searchBusSchedules(params: BusScheduleSearch): Observable<BusScheduleListApi[]> {
     return this.http.get<BusScheduleListApi[]>(this.apiUrl+ `bus-schedule/search?
-        from_bus_location_id=${params.fromBusLocationId}
-        &to_bus_location_id=${params.toBusLocationId}
-        &schedule_date=${params.scheduleDate}`)
+        from_location_id=${params.fromLocationId}
+        &to_location_id=${params.toLocationId}
+        &travel_date=${params.travelDate}`)
       .pipe(
         catchError(handleHttpError('Failed to search bus schedules'))
       );

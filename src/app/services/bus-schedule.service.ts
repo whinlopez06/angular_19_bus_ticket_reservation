@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, catchError, throwError, map } from 'rxjs';
-import { BusSchedule, BusScheduleListApi, BusScheduleList2Api, BusScheduleSummary } from '../interface/busSchedule.interface';
+import { BusSchedule, BusScheduleListApi, BusScheduleList2Api, BusScheduleSummaryApi } from '../interface/busSchedule.interface';
 import { environment } from '../../environments/environment';
 import { handleHttpError } from '../shared/error-handler';
 
@@ -27,8 +27,8 @@ export class BusScheduleService {
       );
   }
 
-  getBusSchedulesSummary() : Observable<BusScheduleSummary[]> {
-    return this.http.get<BusScheduleSummary[]>(this.apiUrl + `bus-schedule/summary`)
+  getBusSchedulesSummary() : Observable<BusScheduleSummaryApi[]> {
+    return this.http.get<BusScheduleSummaryApi[]>(this.apiUrl + `bus-schedule/summary`)
       .pipe(
         catchError(handleHttpError('Failed to load bus schedule summary'))
       );

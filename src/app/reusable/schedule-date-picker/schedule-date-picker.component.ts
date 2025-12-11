@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, Input, input, Output, output, signal } from '@angular/core';
+import { Component, EventEmitter, Input, input, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class ScheduleDatePickerComponent {
 
   @Input() icon: string = 'fa-calendar-check';
-  @Input() label: string = 'Date of journey:';
+  @Input() label: string = 'Date:';
 
   @Input() selectedDate !:ReturnType <typeof signal<string>>;
   @Output() selectedDateChange = new EventEmitter<string | null>();

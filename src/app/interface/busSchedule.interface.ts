@@ -1,9 +1,9 @@
 // interface of data from front end going to API
 
 export interface BusScheduleSearch {
-  fromBusLocationId?: number;
-  toBusLocationId?: number;
-  scheduleDate?: string | null;
+  fromLocationId?: number;
+  toLocationId?: number;
+  travelDate?: string | null;
 }
 export interface BusSchedule {
   id?: number,
@@ -20,7 +20,7 @@ export interface BusSchedule {
 // interface of data coming from API
 export interface BusScheduleApi {
   bus_detail_id: number,
-  from_bus_location_id: number,
+  from_location_id: number,
   to_bus_location_id: number,
   departure_time?: string,
   arrival_time?: string,
@@ -49,13 +49,12 @@ export interface BusScheduleListApi {
   operator_name?: string,
   bus_name: string,
   description: string,
-  from_bus_location: string,
-  to_bus_location: string,
-  from_bus_location_id?: number,
-  to_bus_location_id?: number,
-  departure_time?: string,
-  arrival_time?: string,
-  schedule_date: string,
+  from_location: string,
+  to_location: string,
+  from_location_id?: number,
+  to_location_id?: number,
+  boarding_time?: string,
+  travel_date: string,
   seat_capacity: number,
   price: number
 }
@@ -65,7 +64,7 @@ export interface BusScheduleList2Api {
   bus_detail_id?: number,
   bus_full_description: string,
   operator: string,
-  from_bus_location: string,
+  from_location: string,
   to_bus_location: string,
   departure_time: string,
   arrival_time: string,
@@ -74,13 +73,12 @@ export interface BusScheduleList2Api {
   price: number
 }
 
-export interface BusScheduleSummary {
-  location_from_id?: number,
-  location_to_id?: number,
-  bus_name?: string,
-  from_bus_location: string,
-  to_bus_location: string,
+export interface BusScheduleSummaryApi {
+  from_location_id: number,
+  to_location_id: number,
+  from_location: string,
+  to_location: string,
   departure_time?: string,
-  schedule_date: string,
+  travel_date: string,
   bus_count: number
 }

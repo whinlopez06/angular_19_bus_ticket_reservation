@@ -1,0 +1,243 @@
+/* ============================
+   General Card Styling
+============================ */
+.card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Gradient left border on card */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #ff6a00, #ee0979);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+/* ============================
+   Bus Layout
+============================ */
+.bus-layout {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  box-sizing: border-box;
+}
+
+.driver-area {
+  text-align: center;
+}
+
+/* ============================
+   Seat Grid and Buttons
+============================ */
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Seat styling */
+.seat-grid button.seat {
+  width: 50%;
+  aspect-ratio: 1 / 1;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  position: relative;
+  margin: 0 auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 🚌 Aisle spacing between columns 2 & 3 */
+.seat-grid button.seat:nth-child(4n-2) {  /* Column 2 */
+  margin-right: 35px; /* right gap (aisle) */
+}
+.seat-grid button.seat:nth-child(4n-1) {  /* Column 3 */
+  margin-left: 35px;  /* left gap (aisle) */
+}
+
+/* Hover effect — borders only */
+.seat-grid button.seat:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-6px);
+  box-shadow:
+    inset 0 2px 0 0 #4f46e5,
+    inset 0 -2px 0 0 #4f46e5,
+    inset 2px 0 0 0 #4f46e5,
+    inset -2px 0 0 0 #4f46e5;
+}
+
+/* Selected seat */
+.seat-grid button.seat.selected {
+  background-color: #4f46e5;
+  color: #fff;
+}
+
+/* Disabled seat */
+.seat-grid button.seat:disabled {
+  background-color: #dee2e6;
+  cursor: not-allowed;
+}
+
+/* ============================
+   Seat Legend
+============================ */
+.seat-legend {
+  font-size: 0.875rem;
+}
+
+.seat-legend i {
+  font-size: 0.9rem;
+}
+
+/* ============================
+   Booking Summary
+============================ */
+.booking-summary .selected-seat-tags .badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.6em;
+}
+
+/* ============================
+   Contact Details Inputs
+============================ */
+.contact-details .form-control {
+  margin-bottom: 0.5rem;
+}
+
+/* Radio Buttons */
+.contact-details input[type="radio"] {
+  margin-right: 6px;
+  vertical-align: middle;
+  transform: scale(1.1);
+  cursor: pointer;
+}
+
+.contact-details input[type="radio"] + label,
+.contact-details input[type="radio"] + span {
+  margin-right: 12px;
+}
+
+/* ============================
+   Driver Area Label
+============================ */
+.driver-area small {
+  display: block;
+  text-align: center;
+  margin-top: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px dotted #6c757d;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.875rem;
+}
+
+/* Added for tooltip directive */
+.custom-tooltip {
+  background: black;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.custom-tooltip.show {
+  opacity: 1;
+}
+
+/* Prevent hover lift effect for booked/disabled seats */
+.seat-grid button.seat.booked:hover,
+.seat-grid button.seat:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ============================
+   Responsive Design
+============================ */
+
+/* Tablets (medium gap) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .bus-layout {
+    padding: 16px 24px;
+  }
+
+  .seat-grid button.seat {
+    width: 45%;
+  }
+
+  /* narrower aisle on tablets */
+  .seat-grid button.seat:nth-child(4n-2) {
+    margin-right: 25px;
+  }
+  .seat-grid button.seat:nth-child(4n-1) {
+    margin-left: 25px;
+  }
+}
+
+/* Desktop (wide aisle) */
+@media (min-width: 992px) {
+  .col-lg-5 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+  }
+
+  .col-lg-7 {
+    flex: 0 0 58.333333%;
+    max-width: 58.333333%;
+  }
+
+  .seat-grid button.seat:nth-child(4n-2) {
+    margin-right: 40px;
+  }
+  .seat-grid button.seat:nth-child(4n-1) {
+    margin-left: 40px;
+  }
+}
+
+/* Mobile (2-column compact layout) */
+@media (max-width: 480px) {
+  .bus-layout {
+    padding: 8px 12px;
+  }
+
+  .seat-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  /* Remove aisle margins on mobile */
+  .seat-grid button.seat {
+    margin: 0 !important;
+    width: 70%;
+  }
+
+  .contact-details input[type="radio"] {
+    margin-right: 4px;
+    transform: scale(1);
+  }
+}

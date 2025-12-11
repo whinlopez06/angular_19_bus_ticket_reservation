@@ -1,6 +1,5 @@
-import { Component, inject, DestroyRef, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Observable, takeUntil } from 'rxjs';
+import { Component, inject, DestroyRef, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BusService } from '../../services/bus.service';
 import { BusScheduleSearch } from '../../interface/busSchedule.interface';
 import { BusScheduleListApi } from '../../interface/busSchedule.interface';
@@ -9,6 +8,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { formatDate } from '../../shared/date-format-handler';
 import { TimeFormatDirective } from '../../directive/time-format.directive';
 import { ToastService } from '../../shared/toast.service';
+
 @Component({
   selector: 'app-search-result',
   imports: [FormsModule, RouterLink, TimeFormatDirective],
@@ -20,37 +20,38 @@ export class SearchResultComponent implements OnInit {
 
   activatedRoute = inject(ActivatedRoute);
   busService = inject(BusService);
-  toast = inject(ToastService);
   formatDate = formatDate;
+  private toast = inject(ToastService);
   private destroyRef = inject(DestroyRef);
-  busScheduleLists: BusScheduleListApi[] = [];
 
-  searchObject: BusScheduleSearch = {
-    fromBusLocationId: 0,
-    toBusLocationId: 0,
-    scheduleDate: null
-  }
+  //busScheduleLists: BusScheduleListApi[] = [];
+  busScheduleLists = signal<BusScheduleListApi[]>([])
+
+  searchParams = signal<BusScheduleSearch>({
+    fromLocationId: 0,
+    toLocationId: 0,
+    travelDate: null
+  });
 
   constructor(private route: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+
     this.route.queryParams.subscribe(params => {
-      this.searchObject.fromBusLocationId = params['fromId'];
-      this.searchObject.toBusLocationId = params['toId'];
-      this.searchObject.scheduleDate = params['schedDate'];
-
-      this.loadSearchBusResults();
-
+      this.searchParams().fromLocationId = params['fromId'];
+      this.searchParams().toLocationId = params['toId'];
+      this.searchParams().travelDate = params['date'];
+      this.loadSearchBusSchedules();
     });
   }
 
-  loadSearchBusResults(): void {
-    this.busService.searchBusSchedule(this.searchObject)
+  loadSearchBusSchedules(): void {
+    this.busService.searchBusSchedules(this.searchParams())
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busSchedules => {
-        this.busScheduleLists = busSchedules;
+        this.busScheduleLists.set(busSchedules);
       },
       error: err => {
         this.toast.showError(err.message);

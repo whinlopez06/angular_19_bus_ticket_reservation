@@ -9,19 +9,23 @@ export function formatDate(input: string, format: string = 'dd MMM yyyy') {
     dd: date.getDate().toString().padStart(2, '0'),
     d: date.getDate().toString(),
 
+    MMMM: date.toLocaleDateString('en-US', { month: 'long' }),
     MMM: date.toLocaleDateString('en-US', { month: 'short' }),
     MM: (date.getMonth() + 1).toString().padStart(2, '0'),
     M: (date.getMonth() + 1).toString(),
 
     yyyy: date.getFullYear().toString(),
-    yy: date.getFullYear.toString().slice(-2),
-  }
+    yy: date.getFullYear().toString().slice(-2),
+  };
+
+  const tokens = Object.keys(map).sort((a, b) => b.length - a.length);
 
   let result = format;
-  Object.keys(map).forEach(token => {
+
+  tokens.forEach(token => {
     result = result.replace(token, map[token]);
   });
 
   return result;
-
 }
+
