@@ -29,4 +29,8 @@ jobs:
             --deploy-url /angular_19_bus_ticket_reservation/
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist/bus-ticket-booking-app/browser
+          token: ${{ secrets.GITHUB_TOKEN }}
