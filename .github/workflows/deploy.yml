@@ -24,7 +24,7 @@ jobs:
 
       - name: Build Angular app
         run: |
-          ng build --configuration production \
+          npx ng build --configuration production \
             --base-href /angular_19_bus_ticket_reservation/ \
             --deploy-url /angular_19_bus_ticket_reservation/
 
