@@ -34,3 +34,4 @@ jobs:
           branch: gh-pages
           folder: dist/bus-ticket-booking-app/browser
           token: ${{ secrets.GITHUB_TOKEN }}
+          clean: true
