@@ -1,0 +1,40 @@
+name: Angular GitHub Pages Deploy
+
+on:
+  push:
+    branches:
+      - main  # Change this if your default branch is 'master'
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout GitHub repository
+        uses: actions/checkout@v3
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Match your local Node version
+          cache: 'npm'
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Build Angular project
+      - name: Build Angular app
+        run: |
+          ng build --configuration production \
+          --base-href /angular_19_bus_ticket_reservation/ \
+          --deploy-url /angular_19_bus_ticket_reservation/
+
+      # 5. Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v5
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist/bus-ticket-booking-app/browser # The folder to deploy.
