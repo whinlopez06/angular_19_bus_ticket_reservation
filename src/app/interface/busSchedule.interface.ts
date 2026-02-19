@@ -65,10 +65,10 @@ export interface BusScheduleList2Api {
   bus_full_description: string,
   operator: string,
   from_location: string,
-  to_bus_location: string,
-  departure_time: string,
-  arrival_time: string,
-  schedule_date: string,
+  to_location: string,
+  boarding_time: string,
+  travel_duration?: number,
+  travel_date: string,
   seat_capacity: number,
   price: number
 }
@@ -78,7 +78,7 @@ export interface BusScheduleSummaryApi {
   to_location_id: number,
   from_location: string,
   to_location: string,
-  departure_time?: string,
+  boarding_time?: string,
   travel_date: string,
   bus_count: number
 }

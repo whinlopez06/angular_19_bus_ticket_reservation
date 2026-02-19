@@ -32,11 +32,11 @@
                     <tr>
                       <td>{{ $index + 1}}</td>
                       <td>{{ busSchedule.from_location }}</td>
-                      <td>{{ busSchedule.to_bus_location }}</td>
+                      <td>{{ busSchedule.to_location }}</td>
                       <td>{{ busSchedule.bus_full_description }}</td>
                       <td>{{ busSchedule.operator }}</td>
-                      <td class="text-center">{{ formatDate(busSchedule.schedule_date) }}</td>
-                      <td class="text-center"><span [appTimeFormat]="busSchedule.departure_time"></span></td>
+                      <td class="text-center">{{ formatDate(busSchedule.travel_date) }}</td>
+                      <td class="text-center"><span [appTimeFormat]="busSchedule.boarding_time"></span></td>
                       <td class="text-center">{{ busSchedule.seat_capacity }}</td>
                       <td class="text-center">{{ busSchedule.price }}</td>
                       <td>
