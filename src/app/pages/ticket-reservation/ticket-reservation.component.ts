@@ -6,7 +6,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BusScheduleReservationService } from '../../services/bus-schedule-reservation.service';
-import { BusScheduleBookingApi, BusScheduleBookingSeatApi, ScheduleBooking } from '../../interface/busScheduleBooking.interface';
 import { BusScheduleReservationApi, BusScheduleReservationSeatApi, ScheduleReservation } from '../../interface/busScheduleReservation.interface';
 import { TooltipDirective } from '../../directive/tooltip.directive';
 import { TimeFormatDirective } from '../../directive/time-format.directive';
@@ -16,12 +15,12 @@ import { formatDate } from '../../shared/date-format-handler';
 
 @Component({
   selector: 'app-ticket-reservation',
-  imports: [CommonModule, FormsModule, TooltipDirective, TimeFormatDirective, TimeDifferenceDirective],
+  imports: [CommonModule, FormsModule, TooltipDirective, TimeFormatDirective],
   templateUrl: './ticket-reservation.component.html',
   styleUrl: './ticket-reservation.component.css'
 })
-export class TicketReservationComponent implements OnInit, AfterViewInit{
 
+export class TicketReservationComponent implements OnInit, AfterViewInit{
 
   activatedRoute = inject(ActivatedRoute);
   busScheduleService = inject(BusScheduleService);
@@ -174,7 +173,7 @@ export class TicketReservationComponent implements OnInit, AfterViewInit{
   }
 
   bookTicket() {
-    const confirmation = confirm('Are you sure you want to confirm this booking?');
+    const confirmation = confirm('Would you like to proceed with confirming this seat reservation?');
     if (!confirmation) {
       return;
     }

@@ -14,7 +14,6 @@ export class LocationService {
   private readonly apiUrl: string = environment.apiUrl; //'http://localhost:8000/api/';
 
   constructor(private http: HttpClient) {
-
   }
 
   getLocations(): Observable<Location[]> {

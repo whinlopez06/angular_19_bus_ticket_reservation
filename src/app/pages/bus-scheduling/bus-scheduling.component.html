@@ -20,7 +20,7 @@
                     <th class="text-center">To Location</th>
                     <th class="text-center">Bus Name</th>
                     <th class="text-center">Operator</th>
-                    <th class="text-center">Schedule Date</th>
+                    <th class="text-center">Travel Date</th>
                     <th class="text-center">Departure</th>
                     <th class="text-center">Seat Capacity</th>
                     <th class="text-center">Price</th>
@@ -41,7 +41,7 @@
                       <td class="text-center">{{ busSchedule.price }}</td>
                       <td>
                         <button class="btn btn-outline-info btn-sm me-2" (click)="editBusSchedule(busSchedule)">Edit</button>
-                        <button class="btn btn-outline-danger btn-sm">Delete</button>
+                        <button class="btn btn-outline-danger btn-sm" (click)="deleteBusSchedule(busSchedule.id)">Delete</button>
                       </td>
                     </tr>
                   }
@@ -61,7 +61,7 @@
           <div class="modal-content rounded-3">
 
             <div class="modal-header">
-              <h5 class="modal-title">Bus Scheduling Form</h5>
+              <h5 class="modal-title">Bus schedule form</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -102,7 +102,7 @@
                   @if (dateType == 'single') {
                     <input type="date"
                           class="form-control w-auto schedule-date-input"
-                          [(ngModel)]="busScheduleParams().scheduleDate"
+                          [(ngModel)]="busScheduleParams().travelDate"
                           [ngModelOptions]="{standalone: true}"
                           name="singleDate">
                   }
@@ -127,12 +127,12 @@
                     <i class="fa-solid fa-clock me-1"></i>Departure time
                   </label>
                   <input type="time"
-                    [(ngModel)]="busScheduleParams().departureTime"
+                    [(ngModel)]="busScheduleParams().boardingTime"
                     name="departureTime"
                     class="form-control">
                 </div>
 
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                   <label for="" class="form-label">
                     <i class="fa-solid fa-clock me-1"></i>Arrival time (Optional)
                   </label>
@@ -140,7 +140,7 @@
                     [(ngModel)]="busScheduleParams().arrivalTime"
                     name="arrivalTime"
                     class="form-control">
-                </div>
+                </div> -->
 
                 <div class="mb-3">
                   <app-bus-dropdown
@@ -160,9 +160,9 @@
                       </label>
                       <input type="text"
                         name="seatCapacity"
-                        [(ngModel)]="seatCapacity"
+                        [(ngModel)]="busScheduleParams().seatCapacity"
                         class="form-control"
-                        [value]="seatCapacity"
+                        [value]="busScheduleParams().seatCapacity"
                         disabled readonly>
                     </div>
                     <div>
@@ -173,7 +173,7 @@
                         name="price"
                         [(ngModel)]="price"
                         class="form-control"
-                        [value]="price"
+                        [value]="busScheduleParams().price"
                         disabled readonly>
                     </div>
                   </div>

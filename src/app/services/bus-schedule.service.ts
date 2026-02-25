@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject, catchError, throwError, map } from 'rxjs';
-import { BusSchedule, BusScheduleListApi, BusScheduleList2Api, BusScheduleSummaryApi } from '../interface/busSchedule.interface';
+import { Observable, Subject, BehaviorSubject, catchError, throwError } from 'rxjs';
+import { BusScheduleListApi, BusScheduleList2Api, BusScheduleSummaryApi } from '../interface/busSchedule.interface';
 import { environment } from '../../environments/environment';
 import { handleHttpError } from '../shared/error-handler';
 
@@ -27,6 +27,7 @@ export class BusScheduleService {
       );
   }
 
+  // get all bus schedules grouped by route and date and showing count
   getBusSchedulesSummary() : Observable<BusScheduleSummaryApi[]> {
     return this.http.get<BusScheduleSummaryApi[]>(this.apiUrl + `bus-schedule/summary`)
       .pipe(
@@ -42,6 +43,26 @@ export class BusScheduleService {
           return throwError(() => new Error("Failed to create schedule"));
         })
       );
+  }
+
+  updateBusSchedule(updateParams: any): Observable<any>{
+    return this.http.put(`${this.apiUrl}bus-schedule/${updateParams.id}`, updateParams)
+    .pipe(
+        catchError(err => {
+          console.error('Error updating schedule: ', err);
+          return throwError(() => new Error("Failed to update schedule"));
+        })
+    );
+  }
+
+  deleteBusSchedule(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}bus-schedule/delete/${id}`)
+    .pipe(
+        catchError(err => {
+          console.error('Error deleting schedule: ', err);
+          return throwError(() => new Error("Failed to delete schedule"));
+        })
+    );
   }
 
 }

@@ -1,3 +1,4 @@
+// (using)
 export interface BusScheduleReservationApi {
   bus_schedule_id: number;
   fullname: string;
@@ -6,14 +7,15 @@ export interface BusScheduleReservationApi {
   gender: string;
   seat_number: number;
 }
-
+// (using)
 export interface BusScheduleReservationSeatApi {
   seat_number: number;
   fullname?: string;
+  emailAddress?: string;
   age?: number;
   gender: string;
 }
-
+// (using)
 export interface ScheduleReservation {
   scheduleId: number,
   availableSeats: number,

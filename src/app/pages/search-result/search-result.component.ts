@@ -34,7 +34,6 @@ export class SearchResultComponent implements OnInit {
   });
 
   constructor(private route: ActivatedRoute) {
-    console.log('travelDate: ', this.searchParams().travelDate);
   }
 
   ngOnInit(): void {
@@ -43,10 +42,9 @@ export class SearchResultComponent implements OnInit {
       this.searchParams().fromLocationId = params['fromId'] === undefined ? 0 : params['fromId'];
       this.searchParams().toLocationId = params['toId'] === undefined ? 0 : params['toId'];
       this.searchParams().travelDate = params['date'] === undefined ? null :  params['date'];
-      console.log(params)
       this.loadSearchBusSchedules();
     });
-    console.log('searchParams: ', this.searchParams());
+
   }
 
   loadSearchBusSchedules(): void {

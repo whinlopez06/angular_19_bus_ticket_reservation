@@ -13,7 +13,6 @@ export interface BusDetail {
 export interface BusDetailApi {
   id: number,
   bus_detail_id: number,
-
   fromBusLocationId: string,
   toBusLocationId: string,
   departureTime: string,
@@ -21,7 +20,7 @@ export interface BusDetailApi {
   scheduleDate: string
 }
 
-// interface of data coming from API
+// interface of data coming from API (using)
 export interface BusDetailBusApi {
   id: number,
   operator_name?: string,

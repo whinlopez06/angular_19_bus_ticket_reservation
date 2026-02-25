@@ -1,30 +1,30 @@
-// interface of data from front end going to API
-
+// interface of data from front end going to API (using)
 export interface BusScheduleSearch {
   fromLocationId?: number;
   toLocationId?: number;
   travelDate?: string | null;
-}
+
+}// (using)
 export interface BusSchedule {
   id?: number,
   busDetailId: number,
-  fromBusLocationId: number,
-  toBusLocationId: number,
-  departureTime?: string,
-  arrivalTime?: string,
-  scheduleDate: string,
+  fromLocationId: number,
+  toLocationId: number,
+  boardingTime?: string,
+  travelDate: string,
   seatCapacity?: number,
   price?: number
 }
 
-// interface of data coming from API
+// interface of data coming from API (using)
 export interface BusScheduleApi {
+  id?: number,
   bus_detail_id: number,
   from_location_id: number,
-  to_bus_location_id: number,
-  departure_time?: string,
-  arrival_time?: string,
-  schedule_date: string
+  to_location_id: number,
+  boarding_time?: string,
+  //arrival_time?: string,
+  travel_date: string
 }
 
 
@@ -42,7 +42,7 @@ export interface BusScheduleList {
 }
 
 
-// interface of data coming from API
+// interface of data coming from API (using)
 export interface BusScheduleListApi {
   id: number,
   bus_detail_id: number,
@@ -58,21 +58,21 @@ export interface BusScheduleListApi {
   seat_capacity: number,
   price: number
 }
-
+// (using)
 export interface BusScheduleList2Api {
   id: number,
   bus_detail_id?: number,
-  bus_full_description: string,
-  operator: string,
+  bus_full_description?: string,
+  operator?: string,
   from_location: string,
   to_location: string,
   boarding_time: string,
-  travel_duration?: number,
   travel_date: string,
   seat_capacity: number,
   price: number
 }
 
+// Summary of bus schedules with group by buses with same route and date (using)
 export interface BusScheduleSummaryApi {
   from_location_id: number,
   to_location_id: number,

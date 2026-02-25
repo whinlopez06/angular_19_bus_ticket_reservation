@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject, OnInit, signal, effect } from '@angular/core';
-import { Observable, takeUntil } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
@@ -19,7 +19,7 @@ import { LocationService } from '../../services/location.service';
 })
 export class SearchComponent implements OnInit {
 
-  locationService = inject(LocationService);
+  //locationService = inject(LocationService);
   busScheduleService = inject(BusScheduleService);
   router = inject(Router);
   formatDate = formatDate;
@@ -41,19 +41,6 @@ export class SearchComponent implements OnInit {
       this.loadBusSchedulesSummary();
   }
 
-  // loadLocations(): void {
-  //   this.locationService.getLocations()
-  //   .pipe(takeUntilDestroyed(this.destroyRef))
-  //   .subscribe({
-  //     next: busLocations => {
-  //       this.busLocationList = busLocations;
-  //     },
-  //     error: err => {
-  //       this.toast.showError(err.message);
-  //     }
-  //   });
-  // }
-
   loadBusSchedulesSummary(): void {
     this.busScheduleService.getBusSchedulesSummary()
     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -73,12 +60,13 @@ export class SearchComponent implements OnInit {
     const date = this.travelDateValue();
 
     if (fromId == toId && (fromId > 0 && toId > 0)) {
-      this.toast.showWarning('Destination cannot be the same.');
+      this.toast.showWarning('Destination cannot be the same');
       return;
     }
+
     this.router.navigate(['/search-result'], {
-      queryParams: { fromId, toId, date }
-    }
+        queryParams: { fromId, toId, date }
+      }
     );
   }
 

@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LocationDropdownComponent } from '../../reusable/location-dropdown/location-dropdown.component';
@@ -42,49 +42,39 @@ export class BusSchedulingComponent implements OnInit {
   busDetails = signal<BusDetailBusApi[]>([]);
   busScheduleList = signal<BusScheduleList2Api[]>([]);
 
-
-  //--
-  readonly defaultBusScheduleParams: BusSchedule = {
-    busDetailId: 0,
-    fromBusLocationId: 0,
-    toBusLocationId: 0,
-    departureTime: '',
-    arrivalTime: '',
-    scheduleDate: '',
-    seatCapacity: 0,
-    price: 0
-  }
-
-  readonly defaultBusScheduleParamsApi: BusScheduleApi = {
-    bus_detail_id: 0,
-    from_location_id: 0,
-    to_bus_location_id: 0,
-    departure_time: '',
-    arrival_time: '',
-    schedule_date: ''
-  };
-
   busScheduleParams = signal<BusSchedule>({
+    id: 0,
     busDetailId: 0,
-    fromBusLocationId: 0,
-    toBusLocationId: 0,
-    departureTime: "",
-    arrivalTime: "",
-    scheduleDate: ""
+    fromLocationId: 0,
+    toLocationId: 0,
+    boardingTime: "",
+    travelDate: ""
   });
 
   busScheduleParamsApi = signal<BusScheduleApi>({
+    id: 0,
     bus_detail_id: 0,
     from_location_id: 0,
-    to_bus_location_id: 0,
-    departure_time: '',
-    arrival_time: '',
-    schedule_date: ''
+    to_location_id: 0,
+    boarding_time: '',
+    travel_date: ''
   });
 
-
   //busScheduleData!: BusScheduleListApi;
-  busScheduleData = signal<any>;
+  busScheduleData = signal<BusScheduleListApi>({
+    id: 0,
+    bus_detail_id: 0,
+    bus_name: '',
+    description: '',
+    from_location: '',
+    to_location: '',
+    from_location_id: 0,
+    to_location_id: 0,
+    boarding_time: '',
+    travel_date: '',
+    seat_capacity: 0,
+    price: 0
+  });
 
   selectedOption: string = 'option1';
   //busIndexValue: number = 0;
@@ -95,19 +85,14 @@ export class BusSchedulingComponent implements OnInit {
   modalReady: boolean = false;
   modalMode: string = 'create';
 
-
-
   constructor() {
   }
 
   ngOnInit(): void {
-
     this.closeModal();
-    this.loadBusesName();
     this.loadBusScheduleLists();
+    this.loadBusesName();
     this.busIndexValue.set(0);
-
-    console.log('dropDownFromLocationValue ?? ', this.dropDownFromLocationValue());
   }
 
   openModal(mode: string = 'create') {
@@ -116,6 +101,7 @@ export class BusSchedulingComponent implements OnInit {
       this.clearFields();
     }
     if (mode == 'update') {
+
     }
     this.modalMode = mode;
 
@@ -132,13 +118,12 @@ export class BusSchedulingComponent implements OnInit {
     this.modalReady = false;
   }
 
-
   handleOnChildFromLocation(value: any): void {
-    this.busScheduleParams().fromBusLocationId = Number(value);
+    this.busScheduleParams().fromLocationId = Number(value);
   }
 
   handleOnChildToLocation(value: any): void {
-    this.busScheduleParams().toBusLocationId = Number(value);
+    this.busScheduleParams().toLocationId = Number(value);
   }
 
   handleOnChildBusDetail(value: any) {
@@ -146,14 +131,12 @@ export class BusSchedulingComponent implements OnInit {
   }
 
   handleOnChildBusOptions(options: any) {
-    this.seatCapacity = options.seat_capacity;
-    this.price = options.price
+    this.busScheduleParams().seatCapacity = options.seat_capacity;
+    this.busScheduleParams().price = options.price;
   }
-
 
   dateRadioChange(optionName: string): void {
     this.selectedOption = optionName;
-    // console.log('selectedOption:...', this.selectedOption);
   }
 
   loadBusesName(): void {
@@ -187,18 +170,16 @@ export class BusSchedulingComponent implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busSchedule => {
-        console.log('loadBusScheduleLists: ', busSchedule);
         this.busScheduleList.set(busSchedule);
       },
       error: err => {
         this.toast.showError(err.message);
       }
-    })
+    });
   }
 
   createBusSchedule() {
-    this.modalMode = 'create';
-    console.log('busScheduleParams:...', this.busScheduleParams);
+
     // ongoing
     // this.busScheduleParamsApi = {
     //   bus_detail_id: this.busScheduleParams.busDetailId,
@@ -208,23 +189,24 @@ export class BusSchedulingComponent implements OnInit {
     //   arrival_time: this.busScheduleParams.arrivalTime,
     //   schedule_date: this.busScheduleParams.scheduleDate
     // }
-    this.closeModal();
-    this.toast.showInfo('This feature is currently under development. Please check back soon.');
-    return false;
 
-    this.busScheduleParamsApi().bus_detail_id = this.busScheduleParams().busDetailId;
-    this.busScheduleParamsApi().from_location_id = this.busScheduleParams().fromBusLocationId;
+    this.setParams();
 
-    console.log('busScheduleParamsApi:...', this.busScheduleParamsApi);
+    //this.closeModal();
+    //this.toast.showInfo('This feature is currently under development. Please check back soon.');
 
-    this.busScheduleService.createBusSchedule(this.busScheduleParamsApi)
+    // this.busScheduleParamsApi().bus_detail_id = this.busScheduleParams().busDetailId;
+    // this.busScheduleParamsApi().from_location_id = this.busScheduleParams().fromLocationId;
+    // this.busScheduleParamsApi().to_location_id = this.busScheduleParams().toLocationId;
+
+    this.busScheduleService.createBusSchedule(this.busScheduleParamsApi())
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: response => {
-        this.closeModal();
         this.toast.showSuccess(response.message);
-        this.loadBusScheduleLists();
         this.clearFields();
+        this.loadBusScheduleLists();
+        this.closeModal();
       }, error: err => {
         this.toast.showError(err.message);
       }
@@ -232,13 +214,64 @@ export class BusSchedulingComponent implements OnInit {
   }
 
   editBusSchedule(busSchedule: any) {
-    console.log('editBusSchedule: ', busSchedule);
+    console.log('edit busSchedule:...', busSchedule);
+    this.busScheduleParams().id = busSchedule.id;
+    console.log('busScheduleParams.id: ..', this.busScheduleParams().id);
     this.getBusScheduleById(busSchedule.id);
     this.openModal('update');
   }
 
+  setParams() {
+    this.busScheduleParamsApi.set({
+      bus_detail_id: this.busScheduleParams().busDetailId,
+      from_location_id: this.busScheduleParams().fromLocationId,
+      to_location_id: this.busScheduleParams().toLocationId,
+      travel_date: this.busScheduleParams().travelDate,
+      boarding_time: this.busScheduleParams().boardingTime
+    });
+  }
+
   updateBusSchedule() {
-    console.log('busScheduleParams: ', this.busScheduleParams);
+    this.setParams();
+
+    let updateParams = {
+      id: this.busScheduleParams().id,
+      bus_detail_id: this.busScheduleParams().busDetailId,
+      from_location_id: this.busScheduleParams().fromLocationId,
+      to_location_id: this.busScheduleParams().toLocationId,
+      boarding_time: this.busScheduleParams().boardingTime,
+      travel_date: this.busScheduleParams().travelDate,
+    }
+    this.busScheduleService.updateBusSchedule(updateParams)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: response => {
+        console.log('update message: ', response);
+        this.toast.showSuccess(response.message);
+        this.loadBusScheduleLists();
+      }, error: err => {
+        this.toast.showError(err.message);
+      }
+    });
+  }
+
+  deleteBusSchedule(id: number) {
+    const confirmation = confirm('Are you sure you want to delete this schedule?');
+    if (!confirmation) {
+      return;
+    }
+
+    this.busScheduleService.deleteBusSchedule(id)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: response => {
+        console.log('delete message: ', response);
+        this.toast.showSuccess(response.message);
+        this.loadBusScheduleLists();
+      }, error: err => {
+        this.toast.showError(err.message);
+      }
+    });
   }
 
   getBusScheduleById(scheduleId: number) {
@@ -246,27 +279,32 @@ export class BusSchedulingComponent implements OnInit {
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busScheduleData => {
-        //this.busScheduleData.set(busScheduleData);
-
+        this.busScheduleData.set(busScheduleData);
         //this.dropDownFromLocationValue.set(2);
+        console.log('busScheduleData:...', this.busScheduleData());
         this.dropDownFromLocationValue.set(busScheduleData.from_location_id ?? 0);
         this.dropDownToLocationValue.set(busScheduleData.to_location_id ?? 0);
         this.dropDownBusValue.set(busScheduleData.bus_detail_id);
-        this.seatCapacity.set(busScheduleData.seat_capacity);
-        this.price.set(busScheduleData.price);
-        console.log('dropDownFromLocationValue: ', this.dropDownFromLocationValue());
-        console.log('dropDownToLocationValue: ', this.dropDownToLocationValue());
-        console.log('busScheduleData: ', busScheduleData);
+
+        // this.seatCapacity.set(busScheduleData.seat_capacity);
+        // this.price.set(busScheduleData.price);
+
+
+        //console.log('dropDownFromLocationValue: ', this.dropDownFromLocationValue());
+        //console.log('dropDownToLocationValue: ', this.dropDownToLocationValue());
+        //console.log('busScheduleData: ', busScheduleData);
 
         // ongoing
-        // this.busScheduleParams.busDetailId = busScheduleData.bus_detail_id;
-        // this.busScheduleParams.fromBusLocationId = busScheduleData.from_bus_location_id ?? 0;
-        // this.busScheduleParams.toBusLocationId = busScheduleData.to_bus_location_id ?? 0;
-        // this.busScheduleParams.departureTime = busScheduleData.departure_time;
-        // this.busScheduleParams.arrivalTime = busScheduleData.arrival_time;
-        // this.busScheduleParams.scheduleDate = busScheduleData.schedule_date;
-        // this.busScheduleParams.seatCapacity = busScheduleData.seat_capacity;
-        // this.busScheduleParams.price = busScheduleData.price;
+      this.busScheduleParams.set({
+        id: scheduleId,
+        busDetailId: this.busScheduleData().bus_detail_id,
+        fromLocationId: this.busScheduleData().from_location_id ?? 0,
+        toLocationId: this.busScheduleData().to_location_id ?? 0,
+        travelDate: this.busScheduleData().travel_date,
+        boardingTime: this.busScheduleData().boarding_time,
+        seatCapacity: this.busScheduleData().seat_capacity,
+        price: this.busScheduleData().price
+      });
 
       },
       error: err => {
@@ -277,14 +315,16 @@ export class BusSchedulingComponent implements OnInit {
 
   clearFields() {
     // ongoing
-    // this.busScheduleParams = {
-    //   busDetailId: 0,
-    //   fromBusLocationId: 0,
-    //   toBusLocationId: 0,
-    //   departureTime: "",
-    //   arrivalTime: "",
-    //   scheduleDate: ""
-    // }
+    this.busScheduleParams.set({
+      busDetailId: 0,
+      fromLocationId: 0,
+      toLocationId: 0,
+      boardingTime: '',
+      travelDate: '',
+      seatCapacity: 0,
+      price: 0
+    });
+
     this.dropDownFromLocationValue.set(0);
     this.dropDownToLocationValue.set(0);
     this.busIndexValue.set(0);
