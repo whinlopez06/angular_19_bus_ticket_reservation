@@ -290,10 +290,6 @@ export class BusSchedulingComponent implements OnInit {
         // this.price.set(busScheduleData.price);
 
 
-        //console.log('dropDownFromLocationValue: ', this.dropDownFromLocationValue());
-        //console.log('dropDownToLocationValue: ', this.dropDownToLocationValue());
-        //console.log('busScheduleData: ', busScheduleData);
-
         // ongoing
       this.busScheduleParams.set({
         id: scheduleId,
