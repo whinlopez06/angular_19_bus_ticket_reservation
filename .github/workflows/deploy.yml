@@ -1,35 +1,37 @@
-name: Deploy Angular to GitHub Pages
+name: Angular GitHub Pages Deploy
 
 on:
   push:
     branches:
-      - main   # or master
-
-permissions:
-  contents: write
+      - main
 
 jobs:
-  build-and-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: '20'
+          cache: npm
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm install
 
-      - name: Build Angular App
-        run: npm run build -- --configuration production --base-href /angular_19_bus_ticket_reservation/
+      - name: Build Angular app
+        run: |
+          npx ng build --configuration production \
+            --base-href /angular_19_bus_ticket_reservation/ \
+            --deploy-url /angular_19_bus_ticket_reservation/
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/angular_19_bus_ticket_reservation
+          branch: gh-pages
+          folder: dist/angular_19_bus_ticket_reservation/browser
+          token: ${{ secrets.GITHUB_TOKEN }}
+          clean: true
