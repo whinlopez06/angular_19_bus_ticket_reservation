@@ -55,7 +55,6 @@ export class SearchResultComponent implements OnInit {
         this.busScheduleLists.set(busSchedules);
       },
       error: err => {
-        console.log('err:', err);
         this.toast.showError(err.message);
       }
     });

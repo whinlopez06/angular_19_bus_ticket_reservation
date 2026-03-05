@@ -40,7 +40,6 @@ export class BusDropdownComponent implements OnInit {
     this.selectedValueChange.emit(this.selectedValue());
     if (value > 0) {
       const selectedObject = this.options.find(obj => obj.id == value);
-      //console.log('ValueChange selectedObject: ', selectedObject);
       this.selectedObject.emit(selectedObject);
     }
   }

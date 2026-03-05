@@ -117,6 +117,7 @@
                     <input type="date"
                           class="form-control w-auto schedule-date-input"
                           [(ngModel)]="endDate"
+                          [min]="startDate"
                           [ngModelOptions]="{standalone: true}"
                           name="endDate">
                   }

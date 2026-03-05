@@ -23,8 +23,9 @@ export interface BusScheduleApi {
   from_location_id: number,
   to_location_id: number,
   boarding_time?: string,
-  //arrival_time?: string,
   travel_date: string
+  seat_capacity?: number,
+  price?: number
 }
 
 

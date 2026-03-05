@@ -18,14 +18,19 @@ export function formatDate(input: string, format: string = 'dd MMM yyyy') {
     yy: date.getFullYear().toString().slice(-2),
   };
 
-  const tokens = Object.keys(map).sort((a, b) => b.length - a.length);
+  // const tokens = Object.keys(map).sort((a, b) => b.length - a.length);
 
-  let result = format;
+  // let result = format;
 
-  tokens.forEach(token => {
-    result = result.replace(token, map[token]);
-  });
+  // tokens.forEach(token => {
+  //   result = result.replace(token, map[token]);
+  // });
 
-  return result;
+  //return result;
+
+
+  const regex = new RegExp(Object.keys(map).join('|'), 'g');
+
+  return format.replace(regex, match => map[match]);
 }
 
