@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LocationDropdownComponent } from '../../reusable/location-dropdown/location-dropdown.component';
@@ -84,6 +84,28 @@ export class BusSchedulingComponent implements OnInit {
   endDate: string = '';
   modalReady: boolean = false;
   modalMode: string = 'create';
+
+  searchText = signal('');
+  filteredSchedules = computed(() => {
+    const search = this.searchText().toLowerCase();
+
+    if (!search) return this.busScheduleList();
+
+    return this.busScheduleList().filter(schedule => {
+      const searchable = `
+        ${schedule.from_location}
+        ${schedule.to_location}
+        ${schedule.bus_full_description}
+        ${schedule.travel_date}
+        ${schedule.boarding_time}
+        ${schedule.seat_capacity}
+        ${schedule.price}
+      `.toLowerCase();
+
+      return searchable.includes(search);
+    });
+  });
+
 
   constructor() {
   }
@@ -344,6 +366,7 @@ export class BusSchedulingComponent implements OnInit {
     this.operatorName = "";
     this.seatCapacity.set(0);
     this.price.set(0);
+    this.searchText.set('');
   }
 
 }
