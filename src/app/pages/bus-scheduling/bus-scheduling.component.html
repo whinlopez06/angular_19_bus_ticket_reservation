@@ -9,6 +9,7 @@
               <h3>Bus Schedules</h3>
 
               <div class="d-flex gap-3">
+                <!-- Search text -->
                 <div class="input-group w-auto">
                   <span class="input-group-text">
                     <i class="fa fa-search"></i>
@@ -18,7 +19,24 @@
                     type="text"
                     placeholder="Search schedules"
                     (input)="searchText.set($any($event.target).value)"
-                    >
+                  >
+                </div>
+
+                <!-- Date Range Filter -->
+                <div class="d-flex gap-2 align-items-center">
+                  <input
+                    type="date"
+                    class="form-control"
+                    [ngModel]="startDateRange()"
+                    (ngModelChange)="onStartDateChange($event)"
+                  >
+                  <span>to</span>
+                  <input
+                    type="date"
+                    class="form-control"
+                    [ngModel]="endDateRange()"
+                    (ngModelChange)="onEndDateChange($event)"
+                  >
                 </div>
 
                 <button class="btn btn-primary" (click)="openModal('create')">
@@ -64,6 +82,11 @@
                   }
                 </tbody>
               </table>
+              <app-pagination
+                [currentPage]="currentPage"
+                [lastPage]="lastPage"
+                (pageChange)="onPageChange($event)">
+              </app-pagination>
             </div>
           } @else {
             <p class="text-muted">No Bus Schedules added yet..</p>

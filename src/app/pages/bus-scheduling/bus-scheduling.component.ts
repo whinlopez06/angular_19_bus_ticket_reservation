@@ -12,12 +12,13 @@ import { formatDate } from '../../shared/date-format-handler';
 import { TimeFormatDirective } from '../../directive/time-format.directive';
 import * as bootstrap from 'bootstrap';
 import { BusDropdownComponent } from '../../reusable/bus-dropdown/bus-dropdown.component';
+import { PaginationComponent } from '../../reusable/pagination/pagination.component';
 
 @Component({
   selector: 'app-bus-scheduling',
   standalone: true,
   imports: [FormsModule, CommonModule, ReactiveFormsModule,
-    LocationDropdownComponent, TimeFormatDirective, BusDropdownComponent],
+    LocationDropdownComponent, TimeFormatDirective, BusDropdownComponent, PaginationComponent],
   templateUrl: './bus-scheduling.component.html',
   styleUrl: './bus-scheduling.component.css'
 })
@@ -86,35 +87,65 @@ export class BusSchedulingComponent implements OnInit {
   modalMode: string = 'create';
 
   searchText = signal('');
-  filteredSchedules = computed(() => {
-    const search = this.searchText().toLowerCase();
+  startDateRange = signal<string | null>(null);
+  endDateRange = signal<string | null>(null);
 
-    if (!search) return this.busScheduleList();
-
-    return this.busScheduleList().filter(schedule => {
-      const searchable = `
-        ${schedule.from_location}
-        ${schedule.to_location}
-        ${schedule.bus_full_description}
-        ${schedule.travel_date}
-        ${schedule.boarding_time}
-        ${schedule.seat_capacity}
-        ${schedule.price}
-      `.toLowerCase();
-
-      return searchable.includes(search);
-    });
-  });
-
+  currentPage: number = 1;
+  lastPage: number = 1;
 
   constructor() {
   }
 
   ngOnInit(): void {
     this.closeModal();
-    this.loadBusScheduleLists();
+    this.loadBusSchedule();
     this.loadBusesName();
   }
+
+  // filteredSchedules = computed(() => {
+  //   const search = this.searchText().toLowerCase();
+
+  //   if (!search) return this.busScheduleList();
+
+  //   return this.busScheduleList().filter(schedule => {
+  //     const searchable = `
+  //       ${schedule.from_location}
+  //       ${schedule.to_location}
+  //       ${schedule.bus_full_description}
+  //       ${schedule.travel_date}
+  //       ${schedule.boarding_time}
+  //       ${schedule.seat_capacity}
+  //       ${schedule.price}
+  //     `.toLowerCase();
+
+  //     return searchable.includes(search);
+  //   });
+  // });
+  filteredSchedules = computed(() => {
+
+    const search = this.searchText().toLowerCase();
+    const startDate = this.startDateRange();
+    const endDate = this.endDateRange();
+
+    return this.busScheduleList().filter(schedule => {
+      const matchesSearch =
+        schedule.from_location.toLowerCase().includes(search) ||
+        schedule.to_location.toLowerCase().includes(search) ||
+        schedule.bus_full_description?.toLowerCase().includes(search) ||
+        schedule.travel_date.toLowerCase().includes(search) ||
+        schedule.operator?.toLocaleLowerCase().includes(search) ||
+        schedule.seat_capacity.toString().includes(search) ||
+        schedule.price.toString().includes(search);
+
+        // date range filtering of the result set
+        //const scheduleDate = new Date(schedule.travel_date);
+        // const startOk = !startDate || scheduleDate >= new Date(startDate);
+        // const endOk = !endDate || scheduleDate <= new Date(endDate);
+        // return matchesSearch && startOk && endOk;
+
+        return matchesSearch;
+    });
+  });
 
   openModal(mode: string = 'create') {
     this.dateType = 'single';
@@ -158,6 +189,24 @@ export class BusSchedulingComponent implements OnInit {
     this.selectedOption = optionName;
   }
 
+  onPageChange(page: number) {
+    if (this.startDateRange() || this.endDateRange()) {
+      this.loadBusScheduleListsDateRange(page);
+    } else {
+      this.loadBusScheduleLists(page);
+    }
+  }
+
+  onStartDateChange(date: string) {
+    this.startDateRange.set(date);
+    this.loadBusScheduleListsDateRange();
+  }
+
+  onEndDateChange(date: string) {
+    this.endDateRange.set(date);
+    this.loadBusScheduleListsDateRange();
+  }
+
   loadBusesName(): void {
     this.busDetailService.getBusesDetail()
     .pipe(takeUntilDestroyed(this.destroyRef))
@@ -171,15 +220,39 @@ export class BusSchedulingComponent implements OnInit {
     });
   }
 
-  loadBusScheduleLists(): void {
-    this.busScheduleService.getBusSchedules()
+  loadBusSchedule(page: number = 1) {
+    if (this.startDateRange() || this.endDateRange()) {
+      this.loadBusScheduleListsDateRange(page);
+    } else {
+      this.loadBusScheduleLists(page);
+    }
+  }
+
+  loadBusScheduleLists(page: number = 1): void {
+    this.busScheduleService.getBusSchedules(page)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busSchedule => {
-        this.busScheduleList.set(busSchedule);
+        this.busScheduleList.set(busSchedule.data);
+
+        this.currentPage = busSchedule.meta.current_page;
+        this.lastPage = busSchedule.meta.last_page;
       },
       error: err => {
         this.toast.showError(err.message);
+      }
+    });
+  }
+
+  loadBusScheduleListsDateRange(page: number = 1): void {
+    this.busScheduleService.getBusSchedulesByDate(this.startDateRange(), this.endDateRange(), page)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next: busSchedule => {
+        this.busScheduleList.set(busSchedule.data);
+
+        this.currentPage = busSchedule.meta.current_page;
+        this.lastPage = busSchedule.meta.last_page;
       }
     });
   }
@@ -203,7 +276,7 @@ export class BusSchedulingComponent implements OnInit {
       next: response => {
         this.toast.showSuccess(response.message);
         this.clearFields();
-        this.loadBusScheduleLists();
+        this.loadBusSchedule(this.currentPage);
         this.closeModal();
       }, error: err => {
         this.toast.showError(err.message);
@@ -218,7 +291,6 @@ export class BusSchedulingComponent implements OnInit {
   }
 
   updateBusSchedule() {
-    //this.setScheduleApiParams(true);
 
     let updateParams: BusScheduleApi = {
       id: this.busScheduleParams().id,
@@ -235,7 +307,8 @@ export class BusSchedulingComponent implements OnInit {
       next: response => {
         this.closeModal();
         this.toast.showSuccess(response.message);
-        this.loadBusScheduleLists();
+
+        this.loadBusSchedule(this.currentPage);
       }, error: err => {
         this.toast.showError(err.message);
       }
@@ -253,7 +326,7 @@ export class BusSchedulingComponent implements OnInit {
     .subscribe({
       next: response => {
         this.toast.showSuccess(response.message);
-        this.loadBusScheduleLists();
+        this.loadBusSchedule(this.currentPage);
       }, error: err => {
         this.toast.showError(err.message);
       }
@@ -366,6 +439,8 @@ export class BusSchedulingComponent implements OnInit {
     this.operatorName = "";
     this.seatCapacity.set(0);
     this.price.set(0);
+    this.startDate = '';
+    this.endDate = '';
     this.searchText.set('');
   }
 

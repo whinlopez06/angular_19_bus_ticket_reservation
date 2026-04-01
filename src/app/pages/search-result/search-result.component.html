@@ -78,6 +78,11 @@
             </div>
             <!-- /col-12 -->
         }
+        <app-pagination
+          [currentPage]="currentPage"
+          [lastPage]="lastPage"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
      } @else {
         <p class="text-muted">No Bus available...</p>
      }

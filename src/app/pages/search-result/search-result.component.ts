@@ -8,10 +8,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { formatDate } from '../../shared/date-format-handler';
 import { TimeFormatDirective } from '../../directive/time-format.directive';
 import { ToastService } from '../../shared/toast.service';
+import { PaginationComponent } from '../../reusable/pagination/pagination.component';
 
 @Component({
   selector: 'app-search-result',
-  imports: [FormsModule, RouterLink, TimeFormatDirective],
+  imports: [FormsModule, RouterLink, TimeFormatDirective, PaginationComponent],
   templateUrl: './search-result.component.html',
   styleUrl: './search-result.component.css'
 })
@@ -33,6 +34,9 @@ export class SearchResultComponent implements OnInit {
     travelDate: null
   });
 
+  currentPage: number = 1;
+  lastPage: number = 1;
+
   constructor(private route: ActivatedRoute) {
   }
 
@@ -47,17 +51,25 @@ export class SearchResultComponent implements OnInit {
 
   }
 
-  loadSearchBusSchedules(): void {
-    this.busService.searchBusSchedules(this.searchParams())
+  loadSearchBusSchedules(page: number = 1): void {
+    this.busService.searchBusSchedules(this.searchParams(), page)
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
       next: busSchedules => {
-        this.busScheduleLists.set(busSchedules);
+        this.busScheduleLists.set(busSchedules.data);
+
+        this.currentPage = busSchedules.meta.current_page;
+        this.lastPage = busSchedules.meta.last_page;
+
       },
       error: err => {
         this.toast.showError(err.message);
       }
     });
+  }
+
+  onPageChange(page: number) {
+    this.loadSearchBusSchedules(page);
   }
 
 }

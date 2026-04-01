@@ -15,7 +15,7 @@ export class BusScheduleReservationService {
   constructor(private http: HttpClient) {  }
 
   createNewBooking(objectParams:BusScheduleBookingApi[]) {
-    return this.http.post(this.apiUrl + `bus-schedule-booking/store`, objectParams)
+    return this.http.post(this.apiUrl + `bus-schedule-booking`, objectParams)
       .pipe(
         catchError(err => {
           console.error('Error creating booking: ', err);

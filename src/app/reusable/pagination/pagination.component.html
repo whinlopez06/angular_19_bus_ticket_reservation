@@ -1,0 +1,26 @@
+<nav *ngIf="lastPage > 1">
+  <ul class="pagination justify-content-end">
+    <!-- Previous -->
+    <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="changePage(currentPage - 1)">
+          Previous
+        </button>
+    </li>
+
+    <!-- Page Numbers-->
+    <li class="page-item"
+      *ngFor="let page of pages()"
+      [class.active]="page === currentPage">
+      <button class="page-link"
+        (click)="changePage(page)">
+        {{ page }}
+      </button>
+    </li>
+
+    <li class="page-item" [class.disabled]="currentPage === lastPage">
+      <button class="page-link" (click)="changePage(currentPage + 1)">
+        Next
+      </button>
+    </li>
+  </ul>
+</nav>

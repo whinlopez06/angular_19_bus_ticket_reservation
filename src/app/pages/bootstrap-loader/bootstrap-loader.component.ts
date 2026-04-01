@@ -11,7 +11,7 @@ import { environment } from '../../../environments/environment';
   template: `
     <div *ngIf="loading.isLoading()"
          class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center"
-         style="background: rgba(0,0,0,0.3); z-index: 1050;">
+         style="background: rgba(0,0,0,0.3); z-index: 1500;">
 
       <!-- Bootstrap Spinner -->
       <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">

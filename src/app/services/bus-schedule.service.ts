@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject, catchError, throwError } from 'rxjs';
 import { BusScheduleListApi, BusScheduleList2Api, BusScheduleSummaryApi } from '../interface/busSchedule.interface';
 import { environment } from '../../environments/environment';
 import { handleHttpError } from '../shared/error-handler';
+import { ApiPagination } from '../interface/apiPagination';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,29 @@ export class BusScheduleService {
       );
   }
 
-  getBusSchedules(): Observable<BusScheduleList2Api[]> {
-    return this.http.get<BusScheduleList2Api[]>(this.apiUrl + `bus-schedule/index`)
+  // Observable<BusScheduleList2Api[]>
+  getBusSchedules(page: number = 1, perPage: number = 20): Observable<ApiPagination<BusScheduleList2Api>> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('per_page', perPage);
+    return this.http.get<ApiPagination<BusScheduleList2Api>>(this.apiUrl + `bus-schedule/index`, {params})
+      .pipe(
+        catchError(handleHttpError('Failed to load bus schedules'))
+      );
+  }
+
+  getBusSchedulesByDate(startDate: any = '', endDate: any = '', page: number = 1, perPage: number = 20): Observable<ApiPagination<BusScheduleList2Api>> {
+    let params = new HttpParams()
+    .set('page', page)
+    .set('per_page', perPage);
+    if (startDate) {
+      params = params.set('start_date', startDate);
+    }
+    if (endDate) {
+       params = params.set('end_date', endDate);
+    }
+
+    return this.http.get<ApiPagination<BusScheduleList2Api>>(this.apiUrl + `bus-schedule/search/date`, {params})
       .pipe(
         catchError(handleHttpError('Failed to load bus schedules'))
       );
@@ -36,7 +58,7 @@ export class BusScheduleService {
   }
 
   createBusSchedule(payload: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}bus-schedule/store`, payload)
+    return this.http.post(`${this.apiUrl}bus-schedule`, payload)
       .pipe(
         catchError(err => {
           console.error('Error creating schedule: ', err);
@@ -56,7 +78,7 @@ export class BusScheduleService {
   }
 
   deleteBusSchedule(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}bus-schedule/delete/${id}`)
+    return this.http.delete(`${this.apiUrl}bus-schedule/${id}`)
     .pipe(
         catchError(err => {
           console.error('Error deleting schedule: ', err);
